@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -45,7 +44,11 @@ export default function Login() {
             />
           </Field>
 
-          <Button size="lg" className="w-full mt-5 cursor-pointer">
+          <Button
+            variant="default"
+            size="lg"
+            className="w-full mt-5 cursor-pointer"
+          >
             Sign In <LogIn />
           </Button>
         </CardContent>
