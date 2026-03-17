@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
     >
       <body className="bg-app-background-light w-full max-w-7xl mx-auto">
         {children}
+        <Toaster richColors />
       </body>
     </html>
   );

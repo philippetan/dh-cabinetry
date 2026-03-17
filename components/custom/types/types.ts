@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import { InputHTMLAttributes, ReactNode } from "react";
 
-export interface CustomInputProps {
-  placeholder?: string;
+export interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: ReactNode;
   align?: "inline-start" | "inline-end";
+  error?: boolean;
 }
