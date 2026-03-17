@@ -1,6 +1,18 @@
-@import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    font-family: var(--font-sans), sans-serif;
+    @apply font-sans;
+  }
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -113,19 +125,4 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-
-  /* custom colors */
-  --color-app-background-light: #f6f7f8;
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    font-family: var(--font-sans), sans-serif;
-  }
 }
