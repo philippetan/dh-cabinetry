@@ -1,11 +1,18 @@
-import React from "react";
+import Sidebar from "@/components/custom/admin.sidebar";
+import { AuthProvider } from "@/context/auth.context";
+import { ReactNode } from "react";
 
-export default function LoginLayout({
+export default function AdminLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{ children: ReactNode }>) {
   return (
-    <div className="flex w-full p-4 min-h-screen items-center justify-center max-w-xl mx-auto bg-app-background-light">
-      {children}
-    </div>
+    <AuthProvider>
+      <div className="flex flex-row gap-10 p-8 w-full max-w-7xl mx-auto">
+        <div>
+          <Sidebar />
+        </div>
+        <main className="flex-1 overflow-y-auto">{children}</main>
+      </div>
+    </AuthProvider>
   );
 }
