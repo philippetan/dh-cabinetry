@@ -17,7 +17,7 @@ interface ClientSheetProps {
 
 const ClientSheet = ({ trigger, title, description }: ClientSheetProps) => {
   return (
-    <Sheet key={"bottom"} >
+    <Sheet>
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -25,7 +25,7 @@ const ClientSheet = ({ trigger, title, description }: ClientSheetProps) => {
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
 
-        <div>
+        <div className="px-4">
           <Label>Sample label</Label>
         </div>
       </SheetContent>
