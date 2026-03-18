@@ -130,3 +130,7 @@
     @apply font-sans;
   }
 }
+
+[vaul-drawer-wrapper] {
+  transform: none !important;
+}
