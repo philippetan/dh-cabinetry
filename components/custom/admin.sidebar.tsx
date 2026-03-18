@@ -19,6 +19,51 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/config/FirebaseConfig";
 
+const buttons = [
+  {
+    label: "Dashboard",
+    icon: <LayoutDashboard />,
+    pathname: "/admin/dashboard",
+  },
+  {
+    label: "Clients",
+    icon: <Users />,
+    pathname: "/admin/clients",
+  },
+  {
+    label: "Projects",
+    icon: <ClipboardList />,
+    pathname: "/admin/projects",
+  },
+  {
+    label: "Inventory",
+    icon: <Box />,
+    pathname: "/admin/inventory",
+  },
+  {
+    label: "Purchases",
+    icon: <Handbag />,
+    pathname: "/admin/purchases",
+  },
+  {
+    label: "Expenses",
+    icon: <CircleDollarSign />,
+    pathname: "/admin/expenses",
+  },
+  {
+    label: "Sales",
+    icon: <ChartNoAxesCombined />,
+    pathname: "/admin/sales",
+  },
+  {
+    label: "Suppliers",
+    icon: <Building />,
+    pathname: "/admin/suppliers",
+  },
+  { label: "Reports", icon: <ScrollText />, pathname: "/admin/reports" },
+  { label: "Admins", icon: <ShieldUser />, pathname: "/admin/admins" },
+];
+
 const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -36,85 +81,16 @@ const Sidebar = () => {
       </div>
 
       <div className="w-full space-y-2">
-        <Button
-          variant={pathname.includes("/dashboard") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/dashboard")}
-        >
-          <LayoutDashboard /> Dashboard
-        </Button>
-
-        <Button
-          variant={pathname.includes("/clients") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/clients")}
-        >
-          <Users /> Clients
-        </Button>
-
-        <Button
-          variant={pathname.includes("/projects") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/projects")}
-        >
-          <ClipboardList /> Projects
-        </Button>
-
-        <Button
-          variant={pathname.includes("/inventory") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/inventory")}
-        >
-          <Box /> Inventory
-        </Button>
-
-        <Button
-          variant={pathname.includes("/purchases") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/purchases")}
-        >
-          <Handbag /> Purchases
-        </Button>
-
-        <Button
-          variant={pathname.includes("/expenses") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/expenses")}
-        >
-          <CircleDollarSign /> Expenses
-        </Button>
-
-        <Button
-          variant={pathname.includes("/sales") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/sales")}
-        >
-          <ChartNoAxesCombined /> Sales
-        </Button>
-
-        <Button
-          variant={pathname.includes("/suppliers") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/suppliers")}
-        >
-          <Building /> Suppliers
-        </Button>
-
-        <Button
-          variant={pathname.includes("/reports") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/reports")}
-        >
-          <ScrollText /> Reports
-        </Button>
-
-        <Button
-          variant={pathname.includes("/admins") ? "default" : "ghost"}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => router.push("/admin/admins")}
-        >
-          <ShieldUser /> Admins
-        </Button>
+        {buttons.map((button) => (
+          <Button
+            key={button.pathname}
+            variant={pathname.includes(button.pathname) ? "default" : "ghost"}
+            className="cursor-pointer w-full justify-start"
+            onClick={() => router.push(button.pathname)}
+          >
+            {button.icon} {button.label}
+          </Button>
+        ))}
       </div>
 
       <div className="w-full">
