@@ -5,7 +5,7 @@ import { PlusIcon } from "lucide-react";
 
 export default function Clients() {
   return (
-    <div className="flex w-full space-y-3">
+    <div className="space-y-3">
       <div className="flex w-full items-center justify-between">
         <Label className="font-bold text-lg">Clients</Label>
 
@@ -17,6 +17,7 @@ export default function Clients() {
             />
           }
           title="Add Client"
+          description="Fill in the details below to add a new client."
         />
       </div>
     </div>
