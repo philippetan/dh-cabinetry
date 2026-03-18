@@ -1,23 +1,30 @@
-import CustomButton from "@/components/custom/custom.button";
 import { Label } from "@/components/ui/label";
+import ClientSheet from "./components/client.sheet";
+import CustomButton from "@/components/custom/custom.button";
 import { PlusIcon } from "lucide-react";
-import ClientDrawer from "./components/client.drawer";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Clients() {
   return (
     <div className="space-y-3">
-      <div className="flex w-full items-center">
-        <Label className="font-bold text-lg">Clients</Label>
+      <Card>
+        <CardContent>
+          <div className="flex w-full items-center justify-between">
+            <Label className="font-bold text-lg">Clients</Label>
 
-        <ClientDrawer
-          trigger={
-            <CustomButton
-              icon={<PlusIcon />}
-              label="Add Client"
+            <ClientSheet
+              trigger={
+                <CustomButton
+                  label="Add Client"
+                  icon={<PlusIcon />}
+                />
+              }
+              title="Add Client"
             />
-          }
-        />
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
