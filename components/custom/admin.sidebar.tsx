@@ -12,7 +12,6 @@ import {
   LogOut,
   ScrollText,
   ShieldUser,
-  StickyNote,
   Users,
 } from "lucide-react";
 import { Label } from "../ui/label";
