@@ -37,3 +37,5 @@ export const clientFormWrapper = () => {
     reset: clientForm.reset,
   };
 };
+
+export type ClientFormWrapper = ReturnType<typeof clientFormWrapper>;

@@ -27,8 +27,11 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
 
         <CardContent className="space-y-4">
           <Field>
-            <FieldLabel>Email Address</FieldLabel>
+            <FieldLabel>
+              Email Address <span className="text-destructive">*</span>
+            </FieldLabel>
             <CustomInput
+              type="email"
               placeholder="admin@example.com"
               icon={<Mail />}
               error={!!form.errors.email}
@@ -41,7 +44,9 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
           </Field>
 
           <Field>
-            <FieldLabel>Password</FieldLabel>
+            <FieldLabel>
+              Password <span className="text-destructive">*</span>
+            </FieldLabel>
             <CustomInput
               type="password"
               placeholder="Enter your password"
