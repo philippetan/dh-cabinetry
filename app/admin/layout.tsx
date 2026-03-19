@@ -9,13 +9,15 @@ export default function AdminLayout({
   return (
     <AuthProvider>
       <div className="flex flex-row h-screen w-full max-w-7xl mx-auto">
-        <div className="p-8">
+        <div className="p-4 md:p-6 lg:p-8">
           <Sidebar />
         </div>
 
         <Separator orientation="vertical" />
 
-        <main className="flex-1 overflow-y-auto p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+          {children}
+        </main>
       </div>
     </AuthProvider>
   );

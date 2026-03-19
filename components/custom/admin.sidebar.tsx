@@ -18,6 +18,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/config/FirebaseConfig";
 import CustomButton from "./custom.button";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 const buttons = [
   {
@@ -67,6 +68,7 @@ const buttons = [
 const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const breakpoint = useBreakpoint();
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -75,10 +77,27 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-col w-50 space-y-10">
-      <div>
-        <Label>DAZZLING HOME</Label>
-      </div>
+    <div className="flex flex-col w-10 md:w-35 lg:w-40 space-y-10">
+      {/* <div>
+        {breakpoint === "md" ||
+        breakpoint === "lg" ||
+        breakpoint === "xl" ||
+        breakpoint === "2xl" ? (
+          <Label>DAZZLING HOME</Label>
+        ) : (
+          ""
+        )}
+      </div> */}
+      {breakpoint === "md" ||
+      breakpoint === "lg" ||
+      breakpoint === "xl" ||
+      breakpoint === "2xl" ? (
+        <div>
+          <Label>DAZZLING HOME</Label>
+        </div>
+      ) : (
+        ""
+      )}
 
       <div className="w-full">
         {buttons.map((button) => (
@@ -87,7 +106,14 @@ const Sidebar = () => {
             variant={pathname.includes(button.pathname) ? "default" : "ghost"}
             className="w-full justify-start"
             icon={button.icon}
-            label={button.label}
+            label={
+              breakpoint === "md" ||
+              breakpoint === "lg" ||
+              breakpoint === "xl" ||
+              breakpoint === "2xl"
+                ? button.label
+                : ""
+            }
             onClick={() => router.push(button.pathname)}
           />
         ))}
@@ -99,7 +125,14 @@ const Sidebar = () => {
           className="w-full justify-start"
           icon={<LogOut />}
           iconAlign="end"
-          label="Logout"
+          label={
+            breakpoint === "md" ||
+            breakpoint === "lg" ||
+            breakpoint === "xl" ||
+            breakpoint === "2xl"
+              ? "Logout"
+              : ""
+          }
           onClick={handleLogout}
         />
       </div>

@@ -5,7 +5,7 @@ import { Spinner } from "../ui/spinner";
 
 interface ButtonProps extends ComponentProps<typeof Button> {
   icon?: ReactNode;
-  label: string;
+  label?: string;
   iconAlign?: "start" | "end";
   loading?: boolean;
 }

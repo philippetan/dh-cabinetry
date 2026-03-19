@@ -32,6 +32,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
             </FieldLabel>
             <CustomInput
               type="email"
+              className="text-sm"
               placeholder="admin@example.com"
               icon={<Mail />}
               error={!!form.errors.email}
@@ -49,6 +50,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
             </FieldLabel>
             <CustomInput
               type="password"
+              className="text-sm"
               placeholder="Enter your password"
               icon={<LockKeyhole />}
               error={!!form.errors.password}
