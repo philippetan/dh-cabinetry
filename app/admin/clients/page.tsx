@@ -33,7 +33,7 @@ async function getData(): Promise<Clients[]> {
 export default async function Clients() {
   const data = await getData();
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col h-full w-full space-y-4">
       <div className="flex w-full items-center justify-between">
         <Label className="font-bold text-lg">Clients</Label>
 

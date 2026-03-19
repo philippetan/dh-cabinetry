@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
-import { Inter, Geist } from "next/font/google";
+import { Inter, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,11 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={cn("antialiased", "font-sans", geist.variable)}
-    >
-      <body className="bg-app-background-light w-full max-w-7xl mx-auto">
+    <html lang="en" className={cn("font-sans", inter.variable)}>
+      <body
+        className={`bg-app-background-light ${inter.variable} ${geistMono.variable} font-sans antialiased`}
+      >
         {children}
         <Toaster richColors />
       </body>
