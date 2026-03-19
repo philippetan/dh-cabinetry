@@ -8,9 +8,11 @@ import { CustomInputProps } from "./types/types";
 import { cn } from "@/lib/utils";
 
 const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
-  ({ icon, align = "inline-start", error, ...props }, ref) => {
+  ({ icon, align = "inline-start", error, className, ...props }, ref) => {
     return (
-      <InputGroup className={cn(error && "border border-destructive")}>
+      <InputGroup
+        className={cn(className, error && "border border-destructive")}
+      >
         <InputGroupInput
           ref={ref}
           {...props}

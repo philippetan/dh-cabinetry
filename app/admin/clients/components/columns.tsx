@@ -2,10 +2,12 @@
 
 import CustomAlertDialog from "@/components/custom/custom.alert.dialog";
 import CustomButton from "@/components/custom/custom.button";
-import { deleteClient } from "@/services/client.service";
+import { deleteClient } from "@/services/client.services";
 import { ColumnDef } from "@tanstack/react-table";
-import { Pencil, Trash } from "lucide-react";
+import { ArrowUpDown, Pencil, Trash } from "lucide-react";
 import { toast } from "sonner";
+import ClientSheet from "./client.sheet";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type Clients = {
   id: string;
@@ -18,11 +20,56 @@ export type Clients = {
 
 export const columns: ColumnDef<Clients>[] = [
   {
-    accessorKey: "client_name",
-    header: "Client Name",
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        className="cursor-pointer"
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        className="cursor-pointer"
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
   },
   {
-    header: "Contact Information",
+    accessorKey: "client_name",
+    header: ({ column }) => {
+      return (
+        <CustomButton
+          className="font-bold"
+          variant="ghost"
+          label="Client Name"
+          icon={<ArrowUpDown />}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        />
+      );
+    },
+  },
+  {
+    accessorKey: "email_address",
+    header: ({ column }) => {
+      return (
+        <CustomButton
+          className="font-bold"
+          variant="ghost"
+          label="Contact Information"
+          icon={<ArrowUpDown />}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        />
+      );
+    },
     cell: ({ row }) => {
       const email = row.original.email_address;
       const phone = row.original.contact_number;
@@ -37,10 +84,12 @@ export const columns: ColumnDef<Clients>[] = [
   },
   {
     accessorKey: "ongoing_projects",
+    enableGlobalFilter: false,
     header: "Ongoing Projects",
   },
   {
     accessorKey: "total_spent",
+    enableGlobalFilter: false,
     header: "Total Spent",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("total_spent"));
@@ -68,9 +117,17 @@ export const columns: ColumnDef<Clients>[] = [
 
       return (
         <div className="flex flex-row items-center justify-center gap-2">
-          <CustomButton
-            variant="outline"
-            icon={<Pencil />}
+          <ClientSheet
+            editId={row.original.id}
+            mode="edit"
+            trigger={
+              <CustomButton
+                variant="outline"
+                icon={<Pencil />}
+              />
+            }
+            title="Edit Client"
+            description="Update the client's details below."
           />
 
           <CustomAlertDialog

@@ -12,35 +12,63 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { db } from "@/config/FirebaseConfig";
 import { clientFormWrapper, ClientSchema } from "@/schemas/client.schema";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { ReactNode } from "react";
+import {
+  addClient,
+  fetchClientById,
+  updateClient,
+} from "@/services/client.services";
+import { ClientSheetProps } from "@/types/client.types";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ulid } from "ulid";
 
-interface ClientSheetProps {
-  trigger: ReactNode;
-  title: string;
-  description?: string;
-}
-
-const ClientSheet = ({ trigger, title, description }: ClientSheetProps) => {
+const ClientSheet = ({
+  editId,
+  trigger,
+  title,
+  description,
+  mode,
+}: ClientSheetProps) => {
   const form = clientFormWrapper();
+  const [open, setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!open) {
+      form.reset();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (mode !== "edit" || !editId || !open) return;
+    const fetchClient = async () => {
+      try {
+        const clientData = await fetchClientById(editId);
+        if (!clientData) return;
+        form.reset({
+          first_name: clientData.first_name || "",
+          last_name: clientData.last_name || "",
+          email_address: clientData.email_address || "",
+          contact_number: clientData.contact_number || "",
+          address: clientData.address || "",
+        });
+      } catch (error) {
+        toast.error("Failed to load client data.");
+      }
+    };
+    fetchClient();
+  }, [mode, editId, open]);
 
   const onSubmit = async (data: ClientSchema) => {
     try {
-      const id = ulid();
-
-      await setDoc(doc(db, "clients", id), {
-        ...data,
-        created_at: serverTimestamp(),
-        updated_at: null,
-        deleted_at: null,
-      });
-
-      toast.success("Client saved successfully!");
+      if (mode === "edit" && editId) {
+        await updateClient(editId, data);
+        toast.success("Client updated successfully!");
+      } else {
+        await addClient(data);
+        toast.success("Client saved successfully!");
+      }
       form.reset();
+      setOpen(false);
     } catch (error) {
       console.error("Error saving client:", error);
       toast.error("Failed to save client. Please try again.");
@@ -48,7 +76,10 @@ const ClientSheet = ({ trigger, title, description }: ClientSheetProps) => {
   };
 
   return (
-    <Sheet>
+    <Sheet
+      open={open}
+      onOpenChange={setOpen}
+    >
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent className="sm:max-w-md!">
         <SheetHeader>
