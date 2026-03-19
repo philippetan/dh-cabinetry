@@ -1,7 +1,6 @@
 "use client";
 
 import CustomInput from "@/components/custom/custom.input";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,10 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { Spinner } from "@/components/ui/spinner";
 import { loginFormWrapper } from "@/schemas/login.schema";
 import { LoginFormProps } from "@/types/login.types";
 import { LockKeyhole, LogIn, Mail } from "lucide-react";
+import CustomButton from "../custom/custom.button";
 
 const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const form = loginFormWrapper();
@@ -28,8 +27,12 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
 
         <CardContent className="space-y-4">
           <Field>
-            <FieldLabel>Email Address</FieldLabel>
+            <FieldLabel>
+              Email Address <span className="text-destructive">*</span>
+            </FieldLabel>
             <CustomInput
+              type="email"
+              className="text-sm"
               placeholder="admin@example.com"
               icon={<Mail />}
               error={!!form.errors.email}
@@ -42,9 +45,12 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
           </Field>
 
           <Field>
-            <FieldLabel>Password</FieldLabel>
+            <FieldLabel>
+              Password <span className="text-destructive">*</span>
+            </FieldLabel>
             <CustomInput
               type="password"
+              className="text-sm"
               placeholder="Enter your password"
               icon={<LockKeyhole />}
               error={!!form.errors.password}
@@ -56,14 +62,15 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
             )}
           </Field>
 
-          <Button
+          <CustomButton
             type="submit"
             size="lg"
-            className="w-full mt-5 cursor-pointer"
-            disabled={form.isSubmitting}
-          >
-            {form.isSubmitting && <Spinner />} Sign In <LogIn />
-          </Button>
+            className="w-full mt-5"
+            icon={<LogIn />}
+            iconAlign="end"
+            label="Sign In"
+            loading={form.isSubmitting}
+          />
         </CardContent>
       </Card>
     </form>

@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "../ui/button";
 import {
   Box,
   Building,
@@ -18,6 +17,8 @@ import { Label } from "../ui/label";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/config/FirebaseConfig";
+import CustomButton from "./custom.button";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 const buttons = [
   {
@@ -67,6 +68,7 @@ const buttons = [
 const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const breakpoint = useBreakpoint();
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -75,32 +77,54 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-col w-52 space-y-10">
-      <div>
-        <Label>DAZZLING HOME</Label>
-      </div>
+    <div className="flex flex-col w-10 md:w-35 lg:w-40 space-y-10">
+      {breakpoint === "md" ||
+      breakpoint === "lg" ||
+      breakpoint === "xl" ||
+      breakpoint === "2xl" ? (
+        <div>
+          <Label>DAZZLING HOME</Label>
+        </div>
+      ) : (
+        ""
+      )}
 
-      <div className="w-full space-y-2">
+      <div className="w-full">
         {buttons.map((button) => (
-          <Button
+          <CustomButton
             key={button.pathname}
             variant={pathname.includes(button.pathname) ? "default" : "ghost"}
-            className="cursor-pointer w-full justify-start"
+            className="w-full justify-start"
+            icon={button.icon}
+            label={
+              breakpoint === "md" ||
+              breakpoint === "lg" ||
+              breakpoint === "xl" ||
+              breakpoint === "2xl"
+                ? button.label
+                : ""
+            }
             onClick={() => router.push(button.pathname)}
-          >
-            {button.icon} {button.label}
-          </Button>
+          />
         ))}
       </div>
 
       <div className="w-full">
-        <Button
+        <CustomButton
           variant="outline"
-          className="w-full justify-start cursor-pointer"
+          className="w-full justify-start"
+          icon={<LogOut />}
+          iconAlign="end"
+          label={
+            breakpoint === "md" ||
+            breakpoint === "lg" ||
+            breakpoint === "xl" ||
+            breakpoint === "2xl"
+              ? "Logout"
+              : ""
+          }
           onClick={handleLogout}
-        >
-          Logout <LogOut />
-        </Button>
+        />
       </div>
     </div>
   );
