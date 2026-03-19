@@ -78,16 +78,6 @@ const Sidebar = () => {
 
   return (
     <div className="flex flex-col w-10 md:w-35 lg:w-40 space-y-10">
-      {/* <div>
-        {breakpoint === "md" ||
-        breakpoint === "lg" ||
-        breakpoint === "xl" ||
-        breakpoint === "2xl" ? (
-          <Label>DAZZLING HOME</Label>
-        ) : (
-          ""
-        )}
-      </div> */}
       {breakpoint === "md" ||
       breakpoint === "lg" ||
       breakpoint === "xl" ||
