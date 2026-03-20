@@ -33,7 +33,10 @@ export default function RootLayout({
         className={`bg-app-background-light ${inter.variable} ${geistMono.variable} font-sans antialiased`}
       >
         {children}
-        <Toaster richColors />
+        <Toaster
+          position="top-center"
+          richColors
+        />
       </body>
     </html>
   );

@@ -1,12 +1,9 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
-export const clientSchema = z.object({
-  first_name: z.string().trim().min(1, "First name is required."),
-  last_name: z.string().trim().min(1, "Last name is required."),
+export const supplierSchema = z.object({
+  name: z.string().trim().min(1, "Name of supplier is required."),
   email_address: z.email("Please input a valid email address."),
   contact_number: z.string().trim().min(1, "Contact number is required."),
   address: z.object({
@@ -30,14 +27,13 @@ export const clientSchema = z.object({
   }),
 });
 
-export type ClientSchema = z.infer<typeof clientSchema>;
+export type SupplierSchema = z.infer<typeof supplierSchema>;
 
-export const useClientForm = () =>
-  useForm<ClientSchema>({
-    resolver: zodResolver(clientSchema),
+export const useSupplierForm = () =>
+  useForm<SupplierSchema>({
+    resolver: zodResolver(supplierSchema),
     defaultValues: {
-      first_name: "",
-      last_name: "",
+      name: "",
       email_address: "",
       contact_number: "",
       address: {
@@ -51,17 +47,17 @@ export const useClientForm = () =>
     },
   });
 
-export const clientFormWrapper = () => {
-  const clientForm = useClientForm();
+export const supplierFormWrapper = () => {
+  const supplierForm = useSupplierForm();
 
   return {
-    register: clientForm.register,
-    handleSubmit: clientForm.handleSubmit,
-    errors: clientForm.formState.errors,
-    isSubmitting: clientForm.formState.isSubmitting,
-    reset: clientForm.reset,
-    setValue: clientForm.setValue,
+    register: supplierForm.register,
+    handleSubmit: supplierForm.handleSubmit,
+    errors: supplierForm.formState.errors,
+    isSubmitting: supplierForm.formState.isSubmitting,
+    reset: supplierForm.reset,
+    setValue: supplierForm.setValue,
   };
 };
 
-export type ClientFormWrapper = ReturnType<typeof clientFormWrapper>;
+export type SupplierFormWrapper = ReturnType<typeof supplierFormWrapper>;

@@ -8,11 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { loginFormWrapper } from "@/schemas/login.schema";
 import { LoginFormProps } from "@/types/login.types";
 import { LockKeyhole, LogIn, Mail } from "lucide-react";
 import CustomButton from "../custom/custom.button";
+import CustomField from "../custom/custom.field";
 
 const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const form = loginFormWrapper();
@@ -26,41 +26,35 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <Field>
-            <FieldLabel>
-              Email Address <span className="text-destructive">*</span>
-            </FieldLabel>
+          <CustomField
+            label="Email Address"
+            required
+            error={form.errors.email?.message}
+          >
             <CustomInput
               type="email"
-              className="text-sm"
               placeholder="admin@example.com"
               icon={<Mail />}
               error={!!form.errors.email}
               readOnly={form.isSubmitting}
               {...form.register("email")}
             />
-            {form.errors.email && (
-              <FieldError>{form.errors.email.message}</FieldError>
-            )}
-          </Field>
+          </CustomField>
 
-          <Field>
-            <FieldLabel>
-              Password <span className="text-destructive">*</span>
-            </FieldLabel>
+          <CustomField
+            label="Password"
+            required
+            error={form.errors.password?.message}
+          >
             <CustomInput
               type="password"
-              className="text-sm"
               placeholder="Enter your password"
               icon={<LockKeyhole />}
               error={!!form.errors.password}
               readOnly={form.isSubmitting}
               {...form.register("password")}
             />
-            {form.errors.password && (
-              <FieldError>{form.errors.password.message}</FieldError>
-            )}
-          </Field>
+          </CustomField>
 
           <CustomButton
             type="submit"

@@ -6,6 +6,7 @@ import {
   doc,
   getDoc,
   onSnapshot,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -16,7 +17,11 @@ import { ulid } from "ulid";
 
 export const subscribeToClients = (callback: (data: Clients[]) => void) => {
   const clientsCollection = collection(db, "clients");
-  const q = query(clientsCollection, where("deleted_at", "==", null));
+  const q = query(
+    clientsCollection,
+    where("deleted_at", "==", null),
+    orderBy("created_at", "desc"),
+  );
 
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const data: Clients[] = snapshot.docs.map((doc) => {

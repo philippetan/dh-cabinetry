@@ -1,17 +1,7 @@
 "use client";
 
-import CustomButton from "@/components/custom/custom.button";
 import ClientForm from "@/components/forms/client.form";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import CustomSheet from "@/components/custom/custom.sheet";
 import { clientFormWrapper, ClientSchema } from "@/schemas/client.schema";
 import {
   addClient,
@@ -49,7 +39,14 @@ const ClientSheet = ({
           last_name: clientData.last_name || "",
           email_address: clientData.email_address || "",
           contact_number: clientData.contact_number || "",
-          address: clientData.address || "",
+          address: {
+            block_house_number: clientData.address?.block_house_number || "",
+            street_name: clientData.address?.street_name || "",
+            unit_number: clientData.address?.unit_number || "",
+            floor_number: clientData.address?.floor_number || "",
+            postal_code: clientData.address?.postal_code || "",
+            building_name: clientData.address?.building_name || "",
+          },
         });
       } catch (error) {
         toast.error("Failed to load client data.");
@@ -76,44 +73,21 @@ const ClientSheet = ({
   };
 
   return (
-    <Sheet
+    <CustomSheet
+      trigger={trigger}
+      title={title}
+      description={description}
       open={open}
       onOpenChange={setOpen}
+      onCancel={() => form.reset()}
+      formId="client-form"
+      isSubmitting={form.isSubmitting}
     >
-      <SheetTrigger asChild>{trigger}</SheetTrigger>
-      <SheetContent className="sm:max-w-md!">
-        <SheetHeader>
-          <SheetTitle className="font-bold">{title}</SheetTitle>
-          <SheetDescription>{description}</SheetDescription>
-        </SheetHeader>
-
-        <div className="px-4">
-          <ClientForm
-            form={form}
-            onSubmit={onSubmit}
-          />
-        </div>
-
-        <SheetFooter>
-          <CustomButton
-            type="submit"
-            form="client-form"
-            label="Save"
-            loading={form.isSubmitting}
-            size="lg"
-          />
-
-          <SheetClose asChild>
-            <CustomButton
-              variant="outline"
-              label="Cancel"
-              size="lg"
-              onClick={() => form.reset()}
-            />
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+      <ClientForm
+        form={form}
+        onSubmit={onSubmit}
+      />
+    </CustomSheet>
   );
 };
 

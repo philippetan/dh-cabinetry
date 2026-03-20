@@ -1,6 +1,6 @@
 "use client";
 
-import { ClientFormProps } from "@/types/client.types";
+import { SupplierFormProps } from "@/types/supplier.types";
 import CustomInput from "../custom/custom.input";
 import {
   Building,
@@ -18,7 +18,7 @@ import { getAddressByPostalCode } from "@/services/address.services";
 import { Spinner } from "../ui/spinner";
 import { toast } from "sonner";
 
-const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
+const SupplierForm = ({ form, onSubmit }: SupplierFormProps) => {
   const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
 
   const handlePostalCodeChange = async (
@@ -55,43 +55,27 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
       form.setValue("address.unit_number", "");
     }
   };
+
   return (
     <form
-      id="client-form"
+      id="supplier-form"
       onSubmit={form.handleSubmit(onSubmit)}
     >
       <div className="space-y-4">
-        <div className="flex flex-row items-start gap-4">
-          <CustomField
-            label="First Name"
-            required
-            error={form.errors.first_name?.message}
-          >
-            <CustomInput
-              type="text"
-              placeholder="Enter first name"
-              icon={<User />}
-              error={!!form.errors.first_name}
-              readOnly={form.isSubmitting}
-              {...form.register("first_name")}
-            />
-          </CustomField>
-
-          <CustomField
-            label="Last Name"
-            required
-            error={form.errors.last_name?.message}
-          >
-            <CustomInput
-              type="text"
-              placeholder="Enter last name"
-              icon={<User />}
-              error={!!form.errors.last_name}
-              readOnly={form.isSubmitting}
-              {...form.register("last_name")}
-            />
-          </CustomField>
-        </div>
+        <CustomField
+          label="Supplier Name"
+          required
+          error={form.errors.name?.message}
+        >
+          <CustomInput
+            type="text"
+            placeholder="Enter supplier name"
+            icon={<User />}
+            error={!!form.errors.name}
+            readOnly={form.isSubmitting}
+            {...form.register("name")}
+          />
+        </CustomField>
 
         <CustomField
           label="Email Address"
@@ -218,4 +202,4 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
   );
 };
 
-export default ClientForm;
+export default SupplierForm;
