@@ -13,6 +13,7 @@ export const supplierSchema = z.object({
       .min(1, "Block / House no. is required."),
     street_name: z.string().trim().min(1, "Street name is required."),
     unit_number: z.string().trim().optional().or(z.literal("")),
+    floor_number: z.string().trim().optional().or(z.literal("")),
     postal_code: z
       .string()
       .trim()
@@ -39,6 +40,7 @@ export const useSupplierForm = () =>
         block_house_number: "",
         street_name: "",
         unit_number: "",
+        floor_number: "",
         postal_code: "",
         building_name: "",
       },
@@ -54,6 +56,7 @@ export const supplierFormWrapper = () => {
     errors: supplierForm.formState.errors,
     isSubmitting: supplierForm.formState.isSubmitting,
     reset: supplierForm.reset,
+    setValue: supplierForm.setValue,
   };
 };
 

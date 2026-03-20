@@ -16,6 +16,7 @@ export const clientSchema = z.object({
       .min(1, "Block / House no. is required."),
     street_name: z.string().trim().min(1, "Street name is required."),
     unit_number: z.string().trim().optional().or(z.literal("")),
+    floor_number: z.string().trim().optional().or(z.literal("")),
     postal_code: z
       .string()
       .trim()
@@ -43,6 +44,7 @@ export const useClientForm = () =>
         block_house_number: "",
         street_name: "",
         unit_number: "",
+        floor_number: "",
         postal_code: "",
         building_name: "",
       },
@@ -58,6 +60,7 @@ export const clientFormWrapper = () => {
     errors: clientForm.formState.errors,
     isSubmitting: clientForm.formState.isSubmitting,
     reset: clientForm.reset,
+    setValue: clientForm.setValue,
   };
 };
 

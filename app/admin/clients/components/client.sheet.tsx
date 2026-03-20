@@ -39,7 +39,14 @@ const ClientSheet = ({
           last_name: clientData.last_name || "",
           email_address: clientData.email_address || "",
           contact_number: clientData.contact_number || "",
-          address: clientData.address || "",
+          address: {
+            block_house_number: clientData.address?.block_house_number || "",
+            street_name: clientData.address?.street_name || "",
+            unit_number: clientData.address?.unit_number || "",
+            floor_number: clientData.address?.floor_number || "",
+            postal_code: clientData.address?.postal_code || "",
+            building_name: clientData.address?.building_name || "",
+          },
         });
       } catch (error) {
         toast.error("Failed to load client data.");

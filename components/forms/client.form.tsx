@@ -1,20 +1,60 @@
 "use client";
 
 import { ClientFormProps } from "@/types/client.types";
-import { Field, FieldError, FieldLabel } from "../ui/field";
 import CustomInput from "../custom/custom.input";
 import {
   Building,
   DoorOpen,
   Hash,
+  Layers,
   Mail,
   MapPin,
   Phone,
   User,
 } from "lucide-react";
 import CustomField from "../custom/custom.field";
+import { useState } from "react";
+import { getAddressByPostalCode } from "@/services/address.services";
+import { Spinner } from "../ui/spinner";
+import { toast } from "sonner";
 
 const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
+  const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
+
+  const handlePostalCodeChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = e.target.value.replace(/\D/g, "");
+    e.target.value = value;
+    form.register("address.postal_code").onChange(e);
+
+    if (value.length === 6) {
+      setLoadingAddress(true);
+      try {
+        const address = await getAddressByPostalCode(value);
+        if (address) {
+          form.setValue(
+            "address.block_house_number",
+            address.block_house_number || "",
+          );
+          form.setValue("address.street_name", address.street_name || "");
+          form.setValue("address.building_name", address.building_name || "");
+        } else {
+          toast.error("No address found for this postal code.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch address:", error);
+      } finally {
+        setLoadingAddress(false);
+      }
+    } else {
+      form.setValue("address.block_house_number", "");
+      form.setValue("address.street_name", "");
+      form.setValue("address.building_name", "");
+      form.setValue("address.floor_number", "");
+      form.setValue("address.unit_number", "");
+    }
+  };
   return (
     <form
       id="client-form"
@@ -93,6 +133,23 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
 
         <div className="flex flex-row items-start gap-4">
           <CustomField
+            label="Postal Code"
+            error={form.errors.address?.postal_code?.message}
+          >
+            <CustomInput
+              type="text"
+              inputMode="numeric"
+              placeholder="Enter postal code"
+              icon={loadingAddress ? <Spinner /> : <Mail />}
+              maxLength={6}
+              error={!!form.errors.address?.postal_code}
+              readOnly={form.isSubmitting || loadingAddress}
+              {...form.register("address.postal_code")}
+              onChange={handlePostalCodeChange}
+            />
+          </CustomField>
+
+          <CustomField
             label="Block / House No."
             required
             error={form.errors.address?.block_house_number?.message}
@@ -106,7 +163,9 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
               {...form.register("address.block_house_number")}
             />
           </CustomField>
+        </div>
 
+        <div className="flex flex-row items-start gap-4">
           <CustomField
             label="Street Name"
             required
@@ -121,9 +180,29 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
               {...form.register("address.street_name")}
             />
           </CustomField>
+
+          <CustomField label="Building Name">
+            <CustomInput
+              type="text"
+              placeholder="Enter building name"
+              icon={<Building />}
+              readOnly={form.isSubmitting}
+              {...form.register("address.building_name")}
+            />
+          </CustomField>
         </div>
 
         <div className="flex flex-row items-start gap-4">
+          <CustomField label="Floor Number">
+            <CustomInput
+              type="text"
+              placeholder="Enter floor number"
+              icon={<Layers />}
+              readOnly={form.isSubmitting}
+              {...form.register("address.floor_number")}
+            />
+          </CustomField>
+
           <CustomField label="Unit Number">
             <CustomInput
               type="text"
@@ -133,33 +212,7 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
               {...form.register("address.unit_number")}
             />
           </CustomField>
-
-          <CustomField
-            label="Postal Code"
-            error={form.errors.address?.postal_code?.message}
-          >
-            <CustomInput
-              type="text"
-              inputMode="numeric"
-              placeholder="Enter postal code"
-              icon={<Mail />}
-              maxLength={6}
-              error={!!form.errors.address?.postal_code}
-              readOnly={form.isSubmitting}
-              {...form.register("address.postal_code")}
-            />
-          </CustomField>
         </div>
-
-        <CustomField label="Building Name">
-          <CustomInput
-            type="text"
-            placeholder="Enter building name"
-            icon={<Building />}
-            readOnly={form.isSubmitting}
-            {...form.register("address.building_name")}
-          />
-        </CustomField>
       </div>
     </form>
   );
