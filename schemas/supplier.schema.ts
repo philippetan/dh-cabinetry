@@ -10,7 +10,7 @@ export const supplierSchema = z.object({
     block_house_number: z
       .string()
       .trim()
-      .min(1, "Block/House number is required."),
+      .min(1, "Block / House no. is required."),
     street_name: z.string().trim().min(1, "Street name is required."),
     unit_number: z.string().trim().optional().or(z.literal("")),
     postal_code: z

@@ -114,6 +114,7 @@ const SupplierForm = ({ form, onSubmit }: SupplierFormProps) => {
               inputMode="numeric"
               placeholder="Enter postal code"
               icon={<Mail />}
+              maxLength={6}
               error={!!form.errors.address?.postal_code}
               readOnly={form.isSubmitting}
               {...form.register("address.postal_code")}

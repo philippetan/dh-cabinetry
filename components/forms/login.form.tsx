@@ -8,11 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { loginFormWrapper } from "@/schemas/login.schema";
 import { LoginFormProps } from "@/types/login.types";
 import { LockKeyhole, LogIn, Mail } from "lucide-react";
 import CustomButton from "../custom/custom.button";
+import CustomField from "../custom/custom.field";
 
 const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const form = loginFormWrapper();
@@ -26,10 +26,11 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <Field>
-            <FieldLabel>
-              Email Address <span className="text-destructive">*</span>
-            </FieldLabel>
+          <CustomField
+            label="Email Address"
+            required
+            error={form.errors.email?.message}
+          >
             <CustomInput
               type="email"
               placeholder="admin@example.com"
@@ -38,15 +39,13 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
               readOnly={form.isSubmitting}
               {...form.register("email")}
             />
-            {form.errors.email && (
-              <FieldError>{form.errors.email.message}</FieldError>
-            )}
-          </Field>
+          </CustomField>
 
-          <Field>
-            <FieldLabel>
-              Password <span className="text-destructive">*</span>
-            </FieldLabel>
+          <CustomField
+            label="Password"
+            required
+            error={form.errors.password?.message}
+          >
             <CustomInput
               type="password"
               placeholder="Enter your password"
@@ -55,10 +54,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
               readOnly={form.isSubmitting}
               {...form.register("password")}
             />
-            {form.errors.password && (
-              <FieldError>{form.errors.password.message}</FieldError>
-            )}
-          </Field>
+          </CustomField>
 
           <CustomButton
             type="submit"

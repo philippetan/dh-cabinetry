@@ -3,7 +3,16 @@
 import { ClientFormProps } from "@/types/client.types";
 import { Field, FieldError, FieldLabel } from "../ui/field";
 import CustomInput from "../custom/custom.input";
-import { Mail, MapPin, Phone } from "lucide-react";
+import {
+  Building,
+  DoorOpen,
+  Hash,
+  Mail,
+  MapPin,
+  Phone,
+  User,
+} from "lucide-react";
+import CustomField from "../custom/custom.field";
 
 const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
   return (
@@ -13,43 +22,42 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
     >
       <div className="space-y-4">
         <div className="flex flex-row items-start gap-4">
-          <Field>
-            <FieldLabel>
-              First Name <span className="text-destructive">*</span>
-            </FieldLabel>
+          <CustomField
+            label="First Name"
+            required
+            error={form.errors.first_name?.message}
+          >
             <CustomInput
               type="text"
               placeholder="Enter first name"
+              icon={<User />}
               error={!!form.errors.first_name}
               readOnly={form.isSubmitting}
               {...form.register("first_name")}
             />
-            {form.errors.first_name && (
-              <FieldError>{form.errors.first_name.message}</FieldError>
-            )}
-          </Field>
+          </CustomField>
 
-          <Field>
-            <FieldLabel>
-              Last Name <span className="text-destructive">*</span>
-            </FieldLabel>
+          <CustomField
+            label="Last Name"
+            required
+            error={form.errors.last_name?.message}
+          >
             <CustomInput
               type="text"
               placeholder="Enter last name"
+              icon={<User />}
               error={!!form.errors.last_name}
               readOnly={form.isSubmitting}
               {...form.register("last_name")}
             />
-            {form.errors.last_name && (
-              <FieldError>{form.errors.last_name.message}</FieldError>
-            )}
-          </Field>
+          </CustomField>
         </div>
 
-        <Field>
-          <FieldLabel>
-            Email Address <span className="text-destructive">*</span>
-          </FieldLabel>
+        <CustomField
+          label="Email Address"
+          required
+          error={form.errors.email_address?.message}
+        >
           <CustomInput
             type="email"
             placeholder="Enter email address"
@@ -58,15 +66,13 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
             readOnly={form.isSubmitting}
             {...form.register("email_address")}
           />
-          {form.errors.email_address && (
-            <FieldError>{form.errors.email_address.message}</FieldError>
-          )}
-        </Field>
+        </CustomField>
 
-        <Field>
-          <FieldLabel>
-            Contact Number <span className="text-destructive">*</span>
-          </FieldLabel>
+        <CustomField
+          label="Contact Number"
+          required
+          error={form.errors.contact_number?.message}
+        >
           <CustomInput
             type="text"
             inputMode="numeric"
@@ -83,27 +89,77 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
               },
             })}
           />
-          {form.errors.contact_number && (
-            <FieldError>{form.errors.contact_number.message}</FieldError>
-          )}
-        </Field>
+        </CustomField>
 
-        <Field>
-          <FieldLabel>
-            Address <span className="text-destructive">*</span>
-          </FieldLabel>
+        <div className="flex flex-row items-start gap-4">
+          <CustomField
+            label="Block / House No."
+            required
+            error={form.errors.address?.block_house_number?.message}
+          >
+            <CustomInput
+              type="text"
+              placeholder="Enter block / house no."
+              icon={<Hash />}
+              error={!!form.errors.address?.block_house_number}
+              readOnly={form.isSubmitting}
+              {...form.register("address.block_house_number")}
+            />
+          </CustomField>
+
+          <CustomField
+            label="Street Name"
+            required
+            error={form.errors.address?.street_name?.message}
+          >
+            <CustomInput
+              type="text"
+              placeholder="Enter street name"
+              icon={<MapPin />}
+              error={!!form.errors.address?.street_name}
+              readOnly={form.isSubmitting}
+              {...form.register("address.street_name")}
+            />
+          </CustomField>
+        </div>
+
+        <div className="flex flex-row items-start gap-4">
+          <CustomField label="Unit Number">
+            <CustomInput
+              type="text"
+              placeholder="Enter unit number"
+              icon={<DoorOpen />}
+              readOnly={form.isSubmitting}
+              {...form.register("address.unit_number")}
+            />
+          </CustomField>
+
+          <CustomField
+            label="Postal Code"
+            error={form.errors.address?.postal_code?.message}
+          >
+            <CustomInput
+              type="text"
+              inputMode="numeric"
+              placeholder="Enter postal code"
+              icon={<Mail />}
+              maxLength={6}
+              error={!!form.errors.address?.postal_code}
+              readOnly={form.isSubmitting}
+              {...form.register("address.postal_code")}
+            />
+          </CustomField>
+        </div>
+
+        <CustomField label="Building Name">
           <CustomInput
             type="text"
-            placeholder="Enter address"
-            icon={<MapPin />}
-            error={!!form.errors.address}
+            placeholder="Enter building name"
+            icon={<Building />}
             readOnly={form.isSubmitting}
-            {...form.register("address")}
+            {...form.register("address.building_name")}
           />
-          {form.errors.address && (
-            <FieldError>{form.errors.address.message}</FieldError>
-          )}
-        </Field>
+        </CustomField>
       </div>
     </form>
   );
