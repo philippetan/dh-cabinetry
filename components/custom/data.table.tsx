@@ -23,34 +23,34 @@ import CustomButton from "@/components/custom/custom.button";
 import { useState } from "react";
 import CustomInput from "@/components/custom/custom.input";
 import { Search, Trash } from "lucide-react";
-import { deleteClient } from "@/services/client.services";
-import { toast } from "sonner";
 import CustomAlertDialog from "@/components/custom/custom.alert.dialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  searchPlaceholder?: string;
+  bulkDeleteLabel?: string;
+  onBulkDelete?: (ids: string[]) => Promise<void>;
 }
 
-export function ClientDataTable<TData, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
+  searchPlaceholder = "Search...",
+  bulkDeleteLabel = "Delete selected?",
+  onBulkDelete,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [rowSelection, setRowSelection] = useState({});
 
   const handleBulkDelete = async () => {
-    try {
-      const selectedIds = table
-        .getFilteredSelectedRowModel()
-        .rows.map((row) => (row.original as any).id);
-      await Promise.all(selectedIds.map((id) => deleteClient(id)));
-      table.resetRowSelection();
-      toast.success(`${selectedIds.length} client(s) deleted successfully.`);
-    } catch (error) {
-      toast.error("Failed to delete selected clients. Please try again.");
-    }
+    if (!onBulkDelete) return;
+    const selectedIds = table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => (row.original as any).id);
+    await onBulkDelete(selectedIds);
+    table.resetRowSelection();
   };
 
   const table = useReactTable({
@@ -75,7 +75,7 @@ export function ClientDataTable<TData, TValue>({
     <div>
       <div className="flex items-center justify-between py-4">
         <CustomInput
-          placeholder="Search by name or email..."
+          placeholder={searchPlaceholder}
           icon={<Search />}
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
@@ -90,8 +90,8 @@ export function ClientDataTable<TData, TValue>({
                 label={`Delete (${table.getFilteredSelectedRowModel().rows.length})`}
               />
             }
-            title="Delete selected clients?"
-            description="This action cannot be undone. All selected clients will be deleted."
+            title={bulkDeleteLabel}
+            description="This action cannot be undone."
             onClick={handleBulkDelete}
             confirmText="Delete"
           />

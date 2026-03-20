@@ -19,7 +19,6 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
             </FieldLabel>
             <CustomInput
               type="text"
-              className="text-sm"
               placeholder="Enter first name"
               error={!!form.errors.first_name}
               readOnly={form.isSubmitting}
@@ -36,7 +35,6 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
             </FieldLabel>
             <CustomInput
               type="text"
-              className="text-sm"
               placeholder="Enter last name"
               error={!!form.errors.last_name}
               readOnly={form.isSubmitting}
@@ -54,7 +52,6 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
           </FieldLabel>
           <CustomInput
             type="email"
-            className="text-sm"
             placeholder="Enter email address"
             icon={<Mail />}
             error={!!form.errors.email_address}
@@ -73,7 +70,6 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
           <CustomInput
             type="text"
             inputMode="numeric"
-            className="text-sm"
             placeholder="Enter contact number"
             icon={<Phone />}
             error={!!form.errors.contact_number}
@@ -98,7 +94,6 @@ const ClientForm = ({ form, onSubmit }: ClientFormProps) => {
           </FieldLabel>
           <CustomInput
             type="text"
-            className="text-sm"
             placeholder="Enter address"
             icon={<MapPin />}
             error={!!form.errors.address}

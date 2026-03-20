@@ -1,17 +1,7 @@
 "use client";
 
-import CustomButton from "@/components/custom/custom.button";
 import ClientForm from "@/components/forms/client.form";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import CustomSheet from "@/components/custom/custom.sheet";
 import { clientFormWrapper, ClientSchema } from "@/schemas/client.schema";
 import {
   addClient,
@@ -76,44 +66,21 @@ const ClientSheet = ({
   };
 
   return (
-    <Sheet
+    <CustomSheet
+      trigger={trigger}
+      title={title}
+      description={description}
       open={open}
       onOpenChange={setOpen}
+      onCancel={() => form.reset()}
+      formId="client-form"
+      isSubmitting={form.isSubmitting}
     >
-      <SheetTrigger asChild>{trigger}</SheetTrigger>
-      <SheetContent className="sm:max-w-md!">
-        <SheetHeader>
-          <SheetTitle className="font-bold">{title}</SheetTitle>
-          <SheetDescription>{description}</SheetDescription>
-        </SheetHeader>
-
-        <div className="px-4">
-          <ClientForm
-            form={form}
-            onSubmit={onSubmit}
-          />
-        </div>
-
-        <SheetFooter>
-          <CustomButton
-            type="submit"
-            form="client-form"
-            label="Save"
-            loading={form.isSubmitting}
-            size="lg"
-          />
-
-          <SheetClose asChild>
-            <CustomButton
-              variant="outline"
-              label="Cancel"
-              size="lg"
-              onClick={() => form.reset()}
-            />
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+      <ClientForm
+        form={form}
+        onSubmit={onSubmit}
+      />
+    </CustomSheet>
   );
 };
 

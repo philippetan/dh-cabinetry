@@ -8,6 +8,7 @@ interface ButtonProps extends ComponentProps<typeof Button> {
   label?: string;
   iconAlign?: "start" | "end";
   loading?: boolean;
+  showSpinner?: boolean;
 }
 
 const CustomButton = ({
@@ -16,8 +17,11 @@ const CustomButton = ({
   iconAlign = "start",
   loading,
   className,
+  showSpinner = true,
   ...props
 }: ButtonProps) => {
+  const spinner = loading && showSpinner && <Spinner />;
+
   return (
     <Button
       disabled={loading || props.disabled}
@@ -26,11 +30,11 @@ const CustomButton = ({
     >
       {iconAlign === "end" ? (
         <>
-          {loading && <Spinner />} {label} {icon}
+          {spinner} {label} {icon}
         </>
       ) : (
         <>
-          {icon} {label} {loading && <Spinner />}
+          {icon} {label} {spinner}
         </>
       )}
     </Button>
