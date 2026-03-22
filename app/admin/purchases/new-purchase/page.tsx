@@ -4,8 +4,9 @@ import CustomButton from "@/components/custom/custom.button";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const NewProject = () => {
+const NewPurchase = () => {
   const router = useRouter();
+
   return (
     <div className="flex flex-col h-full w-full space-y-4">
       <div>
@@ -17,12 +18,9 @@ const NewProject = () => {
         />
       </div>
 
-      {/* form here */}
-      <div>
-        
-      </div>
+      <div></div>
     </div>
   );
 };
 
-export default NewProject;
+export default NewPurchase;
