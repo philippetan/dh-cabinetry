@@ -12,7 +12,6 @@ export const purchaseSchema = z.object({
       item_price: z.string().trim().min(1, "Price is required."),
     }),
   ),
-  total_cost: z.string().trim(),
 });
 
 export type PurchaseSchema = z.infer<typeof purchaseSchema>;
@@ -30,7 +29,6 @@ export const usePurchaseForm = () =>
           item_price: "",
         },
       ],
-      total_cost: "",
     },
   });
 
