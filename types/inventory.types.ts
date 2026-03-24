@@ -12,8 +12,10 @@ export interface InventoryFormProps {
 
 export interface InventorySheetProps {
   editId?: string;
-  trigger: ReactNode;
+  trigger?: ReactNode;
   title: string;
   description?: string;
   mode: "add" | "edit";
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }

@@ -46,7 +46,10 @@ const CustomSheet = ({
       onOpenChange={onOpenChange}
     >
       <SheetTrigger asChild>{trigger}</SheetTrigger>
-      <SheetContent className={className}>
+      <SheetContent
+        className={className}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
         <SheetHeader>
           <SheetTitle className="font-bold">{title}</SheetTitle>
           <SheetDescription>{description}</SheetDescription>

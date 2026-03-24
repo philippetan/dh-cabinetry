@@ -16,7 +16,7 @@ const InventoryForm = ({ form, onSubmit }: InventoryFormProps) => {
         >
           <CustomInput
             type="text"
-            placeholder="e.g. ABC Supply Center"
+            placeholder="e.g. Door Hinge"
             error={!!form.errors.item_name}
             readOnly={form.isSubmitting}
             {...form.register("item_name")}
@@ -48,7 +48,7 @@ const InventoryForm = ({ form, onSubmit }: InventoryFormProps) => {
               placeholder="e.g. 10"
               error={!!form.errors.item_stock}
               readOnly={form.isSubmitting}
-              {...form.register("item_stock")}
+              {...form.register("item_stock", { valueAsNumber: true })}
             />
           </CustomField>
         </div>

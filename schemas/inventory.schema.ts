@@ -5,7 +5,7 @@ import z from "zod";
 export const inventorySchema = z.object({
   item_name: z.string().trim().min(1, "Item name is required."),
   item_unit: z.string().trim().min(1, "Item unit is required."),
-  item_stock: z.string().trim().min(1, "Item stock is required."),
+  item_stock: z.number().min(0, "Item stock is required."),
 });
 
 export type InventorySchema = z.infer<typeof inventorySchema>;
@@ -16,7 +16,7 @@ export const useInventoryForm = () =>
     defaultValues: {
       item_name: "",
       item_unit: "",
-      item_stock: "",
+      item_stock: 0,
     },
   });
 

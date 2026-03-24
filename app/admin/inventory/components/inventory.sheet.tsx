@@ -8,7 +8,7 @@ import {
 } from "@/schemas/inventory.schema";
 import { addInventory } from "@/services/inventory.services";
 import { InventorySheetProps } from "@/types/inventory.types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const InventorySheet = ({
@@ -17,17 +17,23 @@ const InventorySheet = ({
   title,
   description,
   mode,
+  open,
+  onOpenChange,
 }: InventorySheetProps) => {
   const form = inventoryFormWrapper();
-  const [open, setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!open) {
+      form.reset();
+    }
+  }, [open]);
 
   const onSubmit = async (data: InventorySchema) => {
     try {
       await addInventory(data);
       toast.success("Item saved successfully!");
-
       form.reset();
-      setOpen(false);
+      onOpenChange(false);
     } catch (error) {
       console.error("Error saving item to inventory: ", error);
       toast.error("Failed to save item to inventory. Please try again.");
@@ -40,7 +46,7 @@ const InventorySheet = ({
       title={title}
       description={description}
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={onOpenChange}
       onCancel={() => form.reset()}
       formId="inventory-form"
       isSubmitting={form.isSubmitting}

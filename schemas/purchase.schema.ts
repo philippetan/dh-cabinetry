@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 
 export const purchaseSchema = z.object({
-  supplierId: z.string().trim().min(1, "Supplier is required."),
+  supplier_id: z.string().trim().min(1, "Supplier is required."),
   purchase_date: z.date(),
   items_purchased: z.array(
     z.object({
@@ -21,7 +21,7 @@ export const usePurchaseForm = () =>
   useForm<PurchaseSchema>({
     resolver: zodResolver(purchaseSchema),
     defaultValues: {
-      supplierId: "",
+      supplier_id: "",
       purchase_date: new Date(),
       items_purchased: [
         {

@@ -3,16 +3,25 @@
 import CustomButton from "@/components/custom/custom.button";
 import PurchaseForm from "@/components/forms/purchase.form";
 import { Label } from "@/components/ui/label";
-import { purchaseFormWrapper } from "@/schemas/purchase.schema";
+import { purchaseFormWrapper, PurchaseSchema } from "@/schemas/purchase.schema";
+import { addNewPurchase } from "@/services/purchase.services";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const NewPurchase = () => {
   const router = useRouter();
   const form = purchaseFormWrapper();
 
-  const onSubmit = async () => {
-    console.log("Clicked");
+  const onSubmit = async (data: PurchaseSchema) => {
+    try {
+      await addNewPurchase(data);
+      toast.success("Purchase saved successfully!");
+      form.reset();
+    } catch (error) {
+      console.error("Error saving new purchase: ", error);
+      toast.error("Failed to save new purchase. Please try again.");
+    }
   };
 
   return (
