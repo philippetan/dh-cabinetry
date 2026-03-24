@@ -15,7 +15,14 @@ const NewPurchase = () => {
 
   const onSubmit = async (data: PurchaseSchema) => {
     try {
-      await addNewPurchase(data);
+      const total = data.items_purchased.reduce((sum, item) => {
+        return (
+          sum +
+          (parseFloat(item.item_qty) || 0) * (parseFloat(item.item_price) || 0)
+        );
+      }, 0);
+
+      await addNewPurchase({ ...data, total_cost: total.toFixed(2) });
       toast.success("Purchase saved successfully!");
       form.reset();
     } catch (error) {

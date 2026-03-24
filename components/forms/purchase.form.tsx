@@ -15,7 +15,7 @@ import CustomButton from "../custom/custom.button";
 import SupplierSheet from "@/app/admin/suppliers/components/supplier.sheet";
 import DatePicker from "../custom/custom.datepicker";
 import CustomInput from "../custom/custom.input";
-import { DollarSign, Hash, Minus } from "lucide-react";
+import { DollarSign, Hash, Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchInventory, fetchSuppliers } from "@/services/purchase.services";
 import { useFieldArray } from "react-hook-form";
@@ -43,10 +43,6 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
     const price = parseFloat(item.item_price) || 0;
     return sum + qty * price;
   }, 0);
-
-  useEffect(() => {
-    form.setValue("total_cost", totalCost.toFixed(2));
-  }, [totalCost]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -89,6 +85,7 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                           form.errors.supplier_id?.message &&
                           "border border-destructive"
                         }
+                        showClear={!!form.watch("supplier_id")}
                       />
                       <ComboboxContent>
                         <ComboboxEmpty>No supplier found.</ComboboxEmpty>
@@ -124,6 +121,7 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                   <CustomField
                     label="Date of purchase"
                     required
+                    error={form.errors.purchase_date?.message}
                   >
                     <DatePicker
                       value={form.watch("purchase_date")}
@@ -205,6 +203,11 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                                   ?.inventory_id?.message &&
                                 "border border-destructive"
                               }`}
+                              showClear={
+                                !!form.watch(
+                                  `items_purchased.${index}.inventory_id`,
+                                )
+                              }
                             />
                             <ComboboxContent>
                               <ComboboxEmpty>No item found.</ComboboxEmpty>
@@ -321,6 +324,7 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                   <CustomButton
                     type="button"
                     variant="outline"
+                    icon={<Plus />}
                     label="Add Item Purchase"
                     className="w-[75%]"
                     onClick={() =>

@@ -38,7 +38,9 @@ export const fetchInventory = async (): Promise<
   }));
 };
 
-export const addNewPurchase = async (data: PurchaseSchema) => {
+export const addNewPurchase = async (
+  data: PurchaseSchema & { total_cost: string },
+) => {
   const id = ulid();
 
   await setDoc(doc(db, "purchases", id), {
