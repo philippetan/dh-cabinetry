@@ -1,15 +1,7 @@
 import { cn } from "@/lib/utils";
-import { ComponentProps, ReactNode } from "react";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
-
-interface ButtonProps extends ComponentProps<typeof Button> {
-  icon?: ReactNode;
-  label?: string;
-  iconAlign?: "start" | "end";
-  loading?: boolean;
-  showSpinner?: boolean;
-}
+import { ButtonProps } from "./types/types";
 
 const CustomButton = ({
   icon,

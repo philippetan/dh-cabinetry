@@ -1,4 +1,10 @@
-import { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  ComponentProps,
+  InputHTMLAttributes,
+  ReactNode,
+  TextareaHTMLAttributes,
+} from "react";
 
 export interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: ReactNode;
@@ -7,4 +13,19 @@ export interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> 
   className?: string;
   multiline?: boolean;
   textareaProps?: TextareaHTMLAttributes<HTMLTextAreaElement>;
+}
+export interface CustomFieldProps {
+  label: string;
+  required?: boolean;
+  error?: string;
+  children: ReactNode;
+  description?: string;
+}
+
+export interface ButtonProps extends ComponentProps<typeof Button> {
+  icon?: ReactNode;
+  label?: string;
+  iconAlign?: "start" | "end";
+  loading?: boolean;
+  showSpinner?: boolean;
 }

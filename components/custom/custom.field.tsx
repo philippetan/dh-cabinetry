@@ -1,18 +1,12 @@
-import { ReactNode } from "react";
-import { Field, FieldError, FieldLabel } from "../ui/field";
-
-interface CustomFieldProps {
-  label: string;
-  required?: boolean;
-  error?: string;
-  children: ReactNode;
-}
+import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
+import { CustomFieldProps } from "./types/types";
 
 const CustomField = ({
   label,
   required,
   error,
   children,
+  description,
 }: CustomFieldProps) => {
   return (
     <Field>
@@ -20,6 +14,7 @@ const CustomField = ({
         {label} {required && <span className="text-destructive">*</span>}
       </FieldLabel>
       {children}
+      {description && <FieldDescription>{description}</FieldDescription>}
       {error && <FieldError>{error}</FieldError>}
     </Field>
   );
