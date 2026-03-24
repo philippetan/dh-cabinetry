@@ -53,6 +53,7 @@ export const deleteSupplier = async (id: string): Promise<void> => {
 
 export const addSupplier = async (data: SupplierSchema) => {
   const id = ulid();
+  
   await setDoc(doc(db, "suppliers", id), {
     ...data,
     created_at: serverTimestamp(),

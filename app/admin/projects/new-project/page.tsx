@@ -3,7 +3,6 @@
 import CustomButton from "@/components/custom/custom.button";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 const NewProject = () => {
   const router = useRouter();
