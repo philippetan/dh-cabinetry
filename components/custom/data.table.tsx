@@ -31,6 +31,7 @@ interface DataTableProps<TData, TValue> {
   searchPlaceholder?: string;
   bulkDeleteLabel?: string;
   onBulkDelete?: (ids: string[]) => Promise<void>;
+  onRowClick?: (row: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -39,6 +40,7 @@ export function DataTable<TData, TValue>({
   searchPlaceholder = "Search...",
   bulkDeleteLabel = "Delete selected?",
   onBulkDelete,
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -126,6 +128,12 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className={
+                    onRowClick
+                      ? "cursor-pointer hover:bg-muted transition-colors"
+                      : ""
+                  }
+                  onClick={() => onRowClick?.(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

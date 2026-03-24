@@ -1,12 +1,23 @@
 "use client";
 
 import CustomButton from "@/components/custom/custom.button";
+import { DataTable } from "@/components/custom/data.table";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { columns, type Purchases } from "./components/columns";
+import { useEffect, useState } from "react";
+import { subscribeToPurchases } from "@/services/purchase.services";
 
 export default function Purchases() {
   const router = useRouter();
+  const [data, setData] = useState<Purchases[]>([]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToPurchases(setData);
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="flex flex-col h-full w-full space-y-4">
@@ -19,6 +30,13 @@ export default function Purchases() {
           onClick={() => router.push("/admin/purchases/new-purchase")}
         />
       </div>
+
+      <DataTable
+        columns={columns}
+        data={data}
+        searchPlaceholder="Search by supplier name"
+        onRowClick={(row) => router.push(`/admin/purchases/${row.id}`)}
+      />
     </div>
   );
 }
