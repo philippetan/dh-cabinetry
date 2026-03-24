@@ -43,6 +43,9 @@ export const purchaseFormWrapper = () => {
     errors: purchaseForm.formState.errors,
     isSubmitting: purchaseForm.formState.isSubmitting,
     reset: purchaseForm.reset,
+    setValue: purchaseForm.setValue,
+    watch: purchaseForm.watch,
+    control: purchaseForm.control,
   };
 };
 

@@ -22,7 +22,10 @@ const NewPurchase = () => {
           variant="link"
           label="Back"
           icon={<ChevronLeft />}
-          onClick={() => router.back()}
+          onClick={() => {
+            router.back();
+            form.reset();
+          }}
         />
       </div>
 

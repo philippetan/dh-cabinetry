@@ -7,9 +7,10 @@ const CustomField = ({
   error,
   children,
   description,
+  className,
 }: CustomFieldProps) => {
   return (
-    <Field>
+    <Field className={className}>
       <FieldLabel>
         {label} {required && <span className="text-destructive">*</span>}
       </FieldLabel>

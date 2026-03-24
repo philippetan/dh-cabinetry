@@ -15,11 +15,12 @@ export interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> 
   textareaProps?: TextareaHTMLAttributes<HTMLTextAreaElement>;
 }
 export interface CustomFieldProps {
-  label: string;
+  label?: string;
   required?: boolean;
   error?: string;
   children: ReactNode;
   description?: string;
+  className?: string;
 }
 
 export interface ButtonProps extends ComponentProps<typeof Button> {
