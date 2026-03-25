@@ -37,11 +37,25 @@ export const columns: ColumnDef<Purchases>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "id",
+    header: ({ column }) => {
+      return (
+        <CustomButton
+          className="font-bold p-0!"
+          variant="ghost"
+          label="Purchase ID"
+          icon={<ArrowUpDown />}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        />
+      );
+    },
+  },
+  {
     accessorKey: "supplier_name",
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold"
+          className="font-bold p-0!"
           variant="ghost"
           label="Supplier Name"
           icon={<ArrowUpDown />}
@@ -55,7 +69,7 @@ export const columns: ColumnDef<Purchases>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold"
+          className="font-bold p-0!"
           variant="ghost"
           label="Purchase Date"
           icon={<ArrowUpDown />}
@@ -81,7 +95,7 @@ export const columns: ColumnDef<Purchases>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold"
+          className="font-bold p-0!"
           variant="ghost"
           label="Total Cost"
           icon={<ArrowUpDown />}

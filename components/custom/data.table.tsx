@@ -32,6 +32,7 @@ interface DataTableProps<TData, TValue> {
   bulkDeleteLabel?: string;
   onBulkDelete?: (ids: string[]) => Promise<void>;
   onRowClick?: (row: TData) => void;
+  viewPagination?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -41,6 +42,7 @@ export function DataTable<TData, TValue>({
   bulkDeleteLabel = "Delete selected?",
   onBulkDelete,
   onRowClick,
+  viewPagination = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -159,30 +161,32 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-end justify-between py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
+      {viewPagination && (
+        <div className="flex items-end justify-between py-4">
+          <div className="flex-1 text-sm text-muted-foreground">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected.
+          </div>
 
-        <div className="flex items-center space-x-2">
-          <CustomButton
-            variant="outline"
-            label="Previous"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          />
+          <div className="flex items-center space-x-2">
+            <CustomButton
+              variant="outline"
+              label="Previous"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            />
 
-          <CustomButton
-            variant="outline"
-            label="Next"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          />
+            <CustomButton
+              variant="outline"
+              label="Next"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

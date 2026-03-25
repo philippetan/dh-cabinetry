@@ -16,10 +16,9 @@ const NewPurchase = () => {
   const onSubmit = async (data: PurchaseSchema) => {
     try {
       const total = data.items_purchased.reduce((sum, item) => {
-        return (
-          sum +
-          (parseFloat(item.item_qty) || 0) * (parseFloat(item.item_price) || 0)
-        );
+        const qty = parseFloat(item.item_qty) || 0;
+        const price = parseFloat(item.item_price?.replace(/,/g, "")) || 0;
+        return sum + qty * price;
       }, 0);
 
       await addNewPurchase({ ...data, total_cost: total.toFixed(2) });

@@ -17,29 +17,26 @@ import {
 } from "firebase/firestore";
 import { ulid } from "ulid";
 
-export const fetchSuppliers = async (): Promise<
-  { id: string; name: string }[]
-> => {
-  const snapshot = await getDocs(
-    query(collection(db, "suppliers"), where("deleted_at", "==", null)),
-  );
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    name: doc.data().name,
-  }));
+export const subscribeToSuppliers = (
+  callback: (data: { id: string; name: string }[]) => void,
+) => {
+  const q = query(collection(db, "suppliers"), where("deleted_at", "==", null));
+  return onSnapshot(q, (snapshot) => {
+    callback(
+      snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().name })),
+    );
+  });
 };
 
-export const fetchInventory = async (): Promise<
-  { id: string; name: string }[]
-> => {
-  const snapshot = await getDocs(
-    query(collection(db, "inventory"), where("deleted_at", "==", null)),
-  );
-
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    name: doc.data().item_name,
-  }));
+export const subscribeToInventory = (
+  callback: (data: { id: string; name: string }[]) => void,
+) => {
+  const q = query(collection(db, "inventory"), where("deleted_at", "==", null));
+  return onSnapshot(q, (snapshot) => {
+    callback(
+      snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().item_name })),
+    );
+  });
 };
 
 export const addNewPurchase = async (
@@ -47,15 +44,23 @@ export const addNewPurchase = async (
 ) => {
   const id = ulid();
 
-  await setDoc(doc(db, "purchases", id), {
+  const cleanedData = {
     ...data,
+    items_purchased: data.items_purchased.map((item) => ({
+      ...item,
+      item_price: parseFloat(item.item_price?.replace(/,/g, "")).toFixed(2),
+    })),
+  };
+
+  await setDoc(doc(db, "purchases", id), {
+    ...cleanedData,
     created_at: serverTimestamp(),
     updated_at: null,
     deleted_at: null,
   });
 
   await Promise.all(
-    data.items_purchased.map((item) =>
+    cleanedData.items_purchased.map((item) =>
       updateDoc(doc(db, "inventory", item.inventory_id), {
         item_stock: increment(parseFloat(item.item_qty)),
       }),

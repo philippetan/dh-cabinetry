@@ -17,7 +17,10 @@ import DatePicker from "../custom/custom.datepicker";
 import CustomInput from "../custom/custom.input";
 import { DollarSign, Hash, Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { fetchInventory, fetchSuppliers } from "@/services/purchase.services";
+import {
+  subscribeToInventory,
+  subscribeToSuppliers,
+} from "@/services/purchase.services";
 import { useFieldArray } from "react-hook-form";
 import InventorySheet from "@/app/admin/inventory/components/inventory.sheet";
 import { Label } from "../ui/label";
@@ -30,17 +33,22 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
     [],
   );
   const [inventorySheetOpen, setInventorySheetOpen] = useState<boolean>(false);
+  const [supplierSheetOpen, setSupplierSheetOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchSuppliers().then(setSuppliers);
-    fetchInventory().then(setInventory);
+    const unsubscribeSuppliers = subscribeToSuppliers(setSuppliers);
+    const unsubscribeInventory = subscribeToInventory(setInventory);
+    return () => {
+      unsubscribeSuppliers();
+      unsubscribeInventory();
+    };
   }, []);
 
   const items = form.watch("items_purchased");
 
   const totalCost = items.reduce((sum, item) => {
     const qty = parseFloat(item.item_qty) || 0;
-    const price = parseFloat(item.item_price) || 0;
+    const price = parseFloat(item.item_price?.replace(/,/g, "")) || 0;
     return sum + qty * price;
   }, 0);
 
@@ -104,16 +112,10 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                     </Combobox>
                   </CustomField>
 
-                  <SupplierSheet
-                    trigger={
-                      <CustomButton
-                        type="button"
-                        label="Add Supplier"
-                      />
-                    }
-                    title="Add Supplier"
-                    description="Fill in the details below to add a new supplier."
-                    mode="add"
+                  <CustomButton
+                    type="button"
+                    label="Add Supplier"
+                    onClick={() => setSupplierSheetOpen(true)}
                   />
                 </div>
 
@@ -137,7 +139,10 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                     <CustomInput
                       readOnly
                       icon={<DollarSign />}
-                      value={totalCost.toFixed(2)}
+                      value={totalCost.toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                       className="pointer-events-none"
                     />
                   </CustomField>
@@ -266,11 +271,16 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                               `items_purchased.${index}.item_price`,
                               {
                                 onBlur: (e) => {
-                                  const value = parseFloat(e.target.value);
+                                  const value = parseFloat(
+                                    e.target.value.replace(/,/g, ""),
+                                  );
                                   if (!isNaN(value)) {
                                     form.setValue(
                                       `items_purchased.${index}.item_price`,
-                                      value.toFixed(2),
+                                      value.toLocaleString("en-US", {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                      }),
                                     );
                                   }
                                 },
@@ -289,11 +299,14 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                                 ) || "0",
                               ) *
                               parseFloat(
-                                form.watch(
-                                  `items_purchased.${index}.item_price`,
-                                ) || "0",
+                                form
+                                  .watch(`items_purchased.${index}.item_price`)
+                                  ?.replace(/,/g, "") || "0",
                               )
-                            ).toFixed(2)}
+                            ).toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
                             icon={<DollarSign />}
                             className="pointer-events-none"
                           />
@@ -360,6 +373,14 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
         onOpenChange={setInventorySheetOpen}
         title="Add Item"
         description="Fill in the details below to add a new item to the inventory."
+        mode="add"
+      />
+
+      <SupplierSheet
+        open={supplierSheetOpen}
+        onOpenChange={setSupplierSheetOpen}
+        title="Add Supplier"
+        description="Fill in the details below to add a new supplier."
         mode="add"
       />
     </>
