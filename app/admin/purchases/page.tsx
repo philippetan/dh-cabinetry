@@ -36,6 +36,7 @@ export default function Purchases() {
         data={data}
         searchPlaceholder="Search by supplier name"
         onRowClick={(row) => router.push(`/admin/purchases/${row.id}`)}
+        selection={false}
       />
     </div>
   );

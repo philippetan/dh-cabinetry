@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   onBulkDelete?: (ids: string[]) => Promise<void>;
   onRowClick?: (row: TData) => void;
   viewPagination?: boolean;
+  selection?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -43,6 +44,7 @@ export function DataTable<TData, TValue>({
   onBulkDelete,
   onRowClick,
   viewPagination = true,
+  selection = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -163,10 +165,14 @@ export function DataTable<TData, TValue>({
 
       {viewPagination && (
         <div className="flex items-end justify-between py-4">
-          <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
-          </div>
+          {selection ? (
+            <div className="flex-1 text-sm text-muted-foreground">
+              {table.getFilteredSelectedRowModel().rows.length} of{" "}
+              {table.getFilteredRowModel().rows.length} row(s) selected.
+            </div>
+          ) : (
+            <div></div>
+          )}
 
           <div className="flex items-center space-x-2">
             <CustomButton

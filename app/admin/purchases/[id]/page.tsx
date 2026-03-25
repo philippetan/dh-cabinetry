@@ -31,9 +31,7 @@ const PurchaseInfo = () => {
   const [purchase, setPurchase] = useState<PurchaseData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [supplierName, setSupplierName] = useState<string>("");
-  const [inventoryNames, setInventoryNames] = useState<Record<string, string>>(
-    {},
-  );
+
   const [tableData, setTableData] = useState<PurchaseItem[]>([]);
 
   useEffect(() => {
@@ -65,32 +63,15 @@ const PurchaseInfo = () => {
             names[inventoryIds[index]] = d.data().item_name;
           }
         });
-        setInventoryNames(names);
 
-        const tableRows: PurchaseItem[] = data.items_purchased.map(
-          (item, index) => ({
-            inventory_id: item.inventory_id,
-            item_name: names[item.inventory_id] || item.inventory_id,
-            item_qty: item.item_qty,
-            item_price: item.item_price,
-          }),
-        );
+        const tableRows: PurchaseItem[] = data.items_purchased.map((item) => ({
+          inventory_id: item.inventory_id,
+          item_name: names[item.inventory_id] || item.inventory_id,
+          item_qty: item.item_qty,
+          item_price: item.item_price,
+        }));
+
         setTableData(tableRows);
-      } catch (error) {
-        console.error("Error fetching purchase:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPurchaseInfo();
-  }, [purchaseId]);
-
-  useEffect(() => {
-    const fetchPurchaseInfo = async () => {
-      try {
-        const purchaseDoc = await getDoc(doc(db, "purchases", purchaseId));
-        if (!purchaseDoc.exists()) return;
-        setPurchase(purchaseDoc.data() as PurchaseData);
       } catch (error) {
         console.error("Error fetching purchase:", error);
       } finally {
@@ -119,7 +100,6 @@ const PurchaseInfo = () => {
           <div className="flex flex-row items-start justify-between">
             <div className="flex flex-col gap-1">
               <Label className="text-muted-foreground text-xs">Supplier</Label>
-              {/* <CustomButton className="font-bold">{supplierName}</CustomButton> */}
               <CustomButton
                 className="font-bold p-0 text-base"
                 variant="link"
