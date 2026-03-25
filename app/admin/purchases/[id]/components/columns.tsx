@@ -16,7 +16,7 @@ export const columns: ColumnDef<PurchaseItem>[] = [
     cell: ({ row }) => (
       <CustomButton
         className="font-normal"
-        label={row.original.inventory_id.slice(0, 13)}
+        label={`${row.original.inventory_id.slice(0, 15)}...`}
         variant="link"
       />
     ),

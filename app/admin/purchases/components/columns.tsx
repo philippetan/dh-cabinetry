@@ -1,5 +1,5 @@
 import CustomButton from "@/components/custom/custom.button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import { Timestamp } from "firebase/firestore";
 import { ArrowUpDown } from "lucide-react";
@@ -13,41 +13,9 @@ export type Purchases = {
 
 export const columns: ColumnDef<Purchases>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        className="cursor-pointer"
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        className="cursor-pointer"
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: "id",
-    header: ({ column }) => {
-      return (
-        <CustomButton
-          className="font-bold p-0!"
-          variant="ghost"
-          label="Purchase ID"
-          icon={<ArrowUpDown />}
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
+    header: () => {
+      return <Label className="font-bold">Purchase ID</Label>;
     },
   },
   {

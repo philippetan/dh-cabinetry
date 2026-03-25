@@ -5,7 +5,6 @@ import {
   collection,
   doc,
   getDoc,
-  getDocs,
   increment,
   onSnapshot,
   orderBy,
@@ -63,6 +62,7 @@ export const addNewPurchase = async (
     cleanedData.items_purchased.map((item) =>
       updateDoc(doc(db, "inventory", item.inventory_id), {
         item_stock: increment(parseFloat(item.item_qty)),
+        updated_at: serverTimestamp(),
       }),
     ),
   );
