@@ -31,6 +31,8 @@ interface DataTableProps<TData, TValue> {
   searchPlaceholder?: string;
   bulkDeleteLabel?: string;
   onBulkDelete?: (ids: string[]) => Promise<void>;
+  onRowClick?: (row: TData) => void;
+  viewPagination?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -39,6 +41,8 @@ export function DataTable<TData, TValue>({
   searchPlaceholder = "Search...",
   bulkDeleteLabel = "Delete selected?",
   onBulkDelete,
+  onRowClick,
+  viewPagination = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -126,6 +130,12 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className={
+                    onRowClick
+                      ? "cursor-pointer hover:bg-muted transition-colors"
+                      : ""
+                  }
+                  onClick={() => onRowClick?.(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -151,30 +161,32 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-end justify-between py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
+      {viewPagination && (
+        <div className="flex items-end justify-between py-4">
+          <div className="flex-1 text-sm text-muted-foreground">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected.
+          </div>
 
-        <div className="flex items-center space-x-2">
-          <CustomButton
-            variant="outline"
-            label="Previous"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          />
+          <div className="flex items-center space-x-2">
+            <CustomButton
+              variant="outline"
+              label="Previous"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            />
 
-          <CustomButton
-            variant="outline"
-            label="Next"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          />
+            <CustomButton
+              variant="outline"
+              label="Next"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

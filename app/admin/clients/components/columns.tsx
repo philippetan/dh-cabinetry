@@ -48,7 +48,7 @@ export const columns: ColumnDef<Clients>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold"
+          className="font-bold p-0!"
           variant="ghost"
           label="Client Name"
           icon={<ArrowUpDown />}
@@ -62,7 +62,7 @@ export const columns: ColumnDef<Clients>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold"
+          className="font-bold p-0!"
           variant="ghost"
           label="Contact Information"
           icon={<ArrowUpDown />}

@@ -18,9 +18,15 @@ const SupplierSheet = ({
   title,
   description,
   mode,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: SupplierSheetProps) => {
+  const [internalOpen, setInternalOpen] = useState<boolean>(false);
+
+  const open = controlledOpen ?? internalOpen;
+  const onOpenChange = controlledOnOpenChange ?? setInternalOpen;
+
   const form = supplierFormWrapper();
-  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (!open) {
@@ -64,7 +70,7 @@ const SupplierSheet = ({
         toast.success("Supplier saved successfully!");
       }
       form.reset();
-      setOpen(false);
+      onOpenChange(false);
     } catch (error) {
       console.error("Error saving supplier: ", error);
       toast.error("Failed to save supplier. Please try again.");
@@ -77,7 +83,7 @@ const SupplierSheet = ({
       title={title}
       description={description}
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={onOpenChange}
       onCancel={() => form.reset()}
       formId="supplier-form"
       isSubmitting={form.isSubmitting}

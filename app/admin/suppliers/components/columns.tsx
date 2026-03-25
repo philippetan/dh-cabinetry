@@ -44,7 +44,7 @@ export const columns: ColumnDef<Suppliers>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold"
+          className="font-bold p-0!"
           variant="ghost"
           label="Supplier Name"
           icon={<ArrowUpDown />}
@@ -58,7 +58,7 @@ export const columns: ColumnDef<Suppliers>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold"
+          className="font-bold p-0!"
           variant="ghost"
           label="Contact Information"
           icon={<ArrowUpDown />}
@@ -103,8 +103,8 @@ export const columns: ColumnDef<Suppliers>[] = [
                 icon={<Pencil />}
               />
             }
-            title="Edit Client"
-            description="Update the client's details below."
+            title="Edit Supplier"
+            description="Update the supplier's details below."
           />
 
           <CustomAlertDialog
