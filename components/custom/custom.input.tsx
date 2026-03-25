@@ -26,7 +26,10 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         className={cn(className, error && "border border-destructive")}
       >
         {multiline ? (
-          <InputGroupTextarea {...textareaProps} />
+          <InputGroupTextarea
+            {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+            {...textareaProps}
+          />
         ) : (
           <InputGroupInput
             ref={ref}
