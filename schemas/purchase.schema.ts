@@ -7,7 +7,7 @@ export const purchaseSchema = z.object({
   purchase_date: z.date(),
   items_purchased: z.array(
     z.object({
-      inventory_id: z.string().trim().min(1, "Item is required."),
+      inventory_id: z.string().trim().min(1, "Material is required."),
       item_qty: z.string().trim().min(1, "Quantity is required."),
       item_price: z.string().trim().min(1, "Price is required."),
     }),

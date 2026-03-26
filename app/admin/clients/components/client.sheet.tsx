@@ -18,9 +18,15 @@ const ClientSheet = ({
   title,
   description,
   mode,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: ClientSheetProps) => {
+  const [internalOpen, setInternalOpen] = useState<boolean>(false);
+
+  const open = controlledOpen ?? internalOpen;
+  const onOpenChange = controlledOnOpenChange ?? setInternalOpen;
+
   const form = clientFormWrapper();
-  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (!open) {
@@ -65,7 +71,7 @@ const ClientSheet = ({
         toast.success("Client saved successfully!");
       }
       form.reset();
-      setOpen(false);
+      onOpenChange(false);
     } catch (error) {
       console.error("Error saving client:", error);
       toast.error("Failed to save client. Please try again.");
@@ -78,7 +84,7 @@ const ClientSheet = ({
       title={title}
       description={description}
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={onOpenChange}
       onCancel={() => form.reset()}
       formId="client-form"
       isSubmitting={form.isSubmitting}

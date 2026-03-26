@@ -16,8 +16,13 @@ import { ulid } from "ulid";
 export const addInventory = async (data: InventorySchema) => {
   const id = ulid();
 
-  await setDoc(doc(db, "inventory", id), {
+  const cleanedData = {
     ...data,
+    item_price: parseFloat(data.item_price?.replace(/,/g, "")).toFixed(2),
+  };
+
+  await setDoc(doc(db, "inventory", id), {
+    ...cleanedData,
     created_at: serverTimestamp(),
     updated_at: null,
     deleted_at: null,

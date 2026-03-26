@@ -13,11 +13,14 @@ const CustomButton = ({
   ...props
 }: ButtonProps) => {
   const spinner = loading && showSpinner && <Spinner />;
-
   return (
     <Button
       disabled={loading || props.disabled}
-      className={cn("cursor-pointer", className)}
+      className={cn(
+        "cursor-pointer",
+        (props.variant === "link" || props.variant === "ghost") && "p-0",
+        className,
+      )}
       {...props}
     >
       {iconAlign === "end" ? (

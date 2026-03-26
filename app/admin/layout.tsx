@@ -15,8 +15,10 @@ export default function AdminLayout({
 
         <Separator orientation="vertical" />
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          {children}
+        <main className="flex-1 overflow-y-auto px-4 md:px-6 lg:px-8 pt-4 md:pt-6 lg:pt-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="min-h-full pb-4 md:pb-6 lg:pb-8 flex flex-col">
+            {children}
+          </div>
         </main>
       </div>
     </AuthProvider>

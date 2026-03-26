@@ -12,7 +12,7 @@ export type PurchaseItem = {
 export const columns: ColumnDef<PurchaseItem>[] = [
   {
     accessorKey: "inventory_id",
-    header: "Item ID",
+    header: "Material ID",
     cell: ({ row }) => (
       <CustomButton
         className="font-normal"
@@ -26,9 +26,9 @@ export const columns: ColumnDef<PurchaseItem>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold p-0!"
+          className="font-bold"
           variant="ghost"
-          label="Item Name"
+          label="Material Name"
           icon={<ArrowUpDown />}
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
@@ -43,7 +43,7 @@ export const columns: ColumnDef<PurchaseItem>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold p-0!"
+          className="font-bold"
           variant="ghost"
           label="Quantity"
           icon={<ArrowUpDown />}
@@ -58,7 +58,7 @@ export const columns: ColumnDef<PurchaseItem>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold p-0!"
+          className="font-bold"
           variant="ghost"
           label="Price"
           icon={<ArrowUpDown />}
@@ -81,7 +81,7 @@ export const columns: ColumnDef<PurchaseItem>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold p-0!"
+          className="font-bold"
           variant="ghost"
           label="Total"
           icon={<ArrowUpDown />}

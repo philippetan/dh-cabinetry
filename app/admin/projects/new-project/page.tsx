@@ -4,14 +4,16 @@ import CustomButton from "@/components/custom/custom.button";
 import { Label } from "@/components/ui/label";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { projectFormWrapper } from "@/schemas/project.schema";
+import { projectFormWrapper, ProjectSchema } from "@/schemas/project.schema";
 import ProjectForm from "@/components/forms/project.form";
 
 const NewProject = () => {
   const router = useRouter();
   const form = projectFormWrapper();
 
-  const onSubmit = async () => {};
+  const onSubmit = async (data: ProjectSchema) => {
+    console.log(data);
+  };
 
   return (
     <div className="flex flex-col h-full w-full space-y-4">

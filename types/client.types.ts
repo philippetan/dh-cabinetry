@@ -9,8 +9,10 @@ export interface ClientFormProps {
 
 export interface ClientSheetProps {
   editId?: string;
-  trigger: ReactNode;
+  trigger?: ReactNode;
   title: string;
   description?: string;
   mode: "add" | "edit";
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }

@@ -23,7 +23,7 @@ export const columns: ColumnDef<Purchases>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold p-0!"
+          className="font-bold"
           variant="ghost"
           label="Supplier Name"
           icon={<ArrowUpDown />}
@@ -37,7 +37,7 @@ export const columns: ColumnDef<Purchases>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold p-0!"
+          className="font-bold"
           variant="ghost"
           label="Purchase Date"
           icon={<ArrowUpDown />}
@@ -47,14 +47,10 @@ export const columns: ColumnDef<Purchases>[] = [
     },
     cell: ({ row }) => {
       const date = row.getValue("purchase_date") as Timestamp;
-
-      return date?.toDate().toLocaleString("en-US", {
+      return date?.toDate().toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
       });
     },
   },
@@ -63,7 +59,7 @@ export const columns: ColumnDef<Purchases>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold p-0!"
+          className="font-bold"
           variant="ghost"
           label="Total Cost"
           icon={<ArrowUpDown />}

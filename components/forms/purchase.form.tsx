@@ -154,18 +154,17 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                   <CardContent className="space-y-4 ">
                     <div className="grid grid-cols-[45%_15%_15%_15%_10%] items-center w-full gap-3">
                       <Label className="text-xs text-muted-foreground">
-                        Item Name
+                        Material Name
                       </Label>
                       <Label className="text-xs text-muted-foreground">
                         Quantity
                       </Label>
                       <Label className="text-xs text-muted-foreground">
-                        Item Price
+                        Price per pc.
                       </Label>
                       <Label className="text-xs text-muted-foreground">
                         Total
                       </Label>
-                      <div />
                     </div>
 
                     {fields.map((field, index) => (
@@ -201,7 +200,7 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                             }}
                           >
                             <ComboboxInput
-                              placeholder="Enter item name"
+                              placeholder="Enter material name"
                               readOnly={form.isSubmitting}
                               className={`${
                                 form.errors.items_purchased?.[index]
@@ -215,7 +214,7 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                               }
                             />
                             <ComboboxContent>
-                              <ComboboxEmpty>No item found.</ComboboxEmpty>
+                              <ComboboxEmpty>No material found.</ComboboxEmpty>
                               <ComboboxList>
                                 {(item) => (
                                   <ComboboxItem
@@ -330,7 +329,7 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                   <CustomButton
                     type="button"
                     variant="default"
-                    label="Add item to inventory"
+                    label="Add material to inventory"
                     onClick={() => setInventorySheetOpen(true)}
                   />
 
@@ -338,7 +337,7 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
                     type="button"
                     variant="outline"
                     icon={<Plus />}
-                    label="Add Item Purchase"
+                    label="Add Purchase"
                     className="w-[75%]"
                     onClick={() =>
                       append({ inventory_id: "", item_qty: "", item_price: "" })
@@ -371,8 +370,8 @@ const PurchaseForm = ({ form, onSubmit }: PurchaseFormProps) => {
       <InventorySheet
         open={inventorySheetOpen}
         onOpenChange={setInventorySheetOpen}
-        title="Add Item"
-        description="Fill in the details below to add a new item to the inventory."
+        title="Add Material"
+        description="Fill in the details below to add a new material to the inventory."
         mode="add"
       />
 

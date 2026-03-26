@@ -7,13 +7,14 @@ export const projectSchema = z.object({
   project_description: z.string().trim().optional(),
   client_id: z.string().trim().min(1, "Client is required."),
   start_date: z.date(),
-  status: z.string(),
   materials_used: z.array(
     z.object({
-      inventory_id: z.string().trim().min(1, "Item is required"),
+      inventory_id: z.string().trim().min(1, "Material is required"),
       item_qty: z.string().trim().min(1, "Quantity is required."),
+      item_price: z.string(),
     }),
   ),
+  labor_cost: z.string().trim().min(1, "Labor cost is required"),
   project_fee: z.string().trim().min(1, "Project fee is required."),
 });
 
@@ -27,20 +28,20 @@ export const useProjectForm = () =>
       project_description: "",
       client_id: "",
       start_date: new Date(),
-      status: "",
       materials_used: [
         {
           inventory_id: "",
           item_qty: "",
+          item_price: "",
         },
       ],
+      labor_cost: "",
       project_fee: "",
     },
   });
 
 export const projectFormWrapper = () => {
   const projectForm = useProjectForm();
-
   return {
     register: projectForm.register,
     handleSubmit: projectForm.handleSubmit,
@@ -50,6 +51,8 @@ export const projectFormWrapper = () => {
     setValue: projectForm.setValue,
     watch: projectForm.watch,
     control: projectForm.control,
+    setError: projectForm.setError,
+    clearErrors: projectForm.clearErrors,
   };
 };
 
