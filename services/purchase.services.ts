@@ -30,7 +30,7 @@ export const subscribeToSuppliers = (
 export const subscribeToInventory = (
   callback: (data: { id: string; name: string }[]) => void,
 ) => {
-  const q = query(collection(db, "inventory"), where("deleted_at", "==", null));
+  const q = query(collection(db, "inventory"), where("deleted_at", "==", null), orderBy("item_name", "asc"));
   return onSnapshot(q, (snapshot) => {
     callback(
       snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().item_name })),
@@ -59,12 +59,27 @@ export const addNewPurchase = async (
   });
 
   await Promise.all(
-    cleanedData.items_purchased.map((item) =>
-      updateDoc(doc(db, "inventory", item.inventory_id), {
+    cleanedData.items_purchased.map(async (item) => {
+      const inventoryRef = doc(db, "inventory", item.inventory_id);
+      const inventorySnap = await getDoc(inventoryRef);
+
+      if (!inventorySnap.exists()) return;
+
+      const current = inventorySnap.data();
+      const currentPrice = parseFloat(current.item_price ?? "0").toFixed(2);
+      const newPrice = item.item_price;
+
+      const updates: Record<string, any> = {
         item_stock: increment(parseFloat(item.item_qty)),
         updated_at: serverTimestamp(),
-      }),
-    ),
+      };
+
+      if (currentPrice !== newPrice) {
+        updates.item_price = newPrice;
+      }
+
+      await updateDoc(inventoryRef, updates);
+    }),
   );
 };
 

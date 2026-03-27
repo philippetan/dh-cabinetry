@@ -14,7 +14,7 @@ export const columns: ColumnDef<Inventory>[] = [
   {
     accessorKey: "id",
     header: () => {
-      return <Label className="font-bold">Item ID</Label>;
+      return <Label className="font-bold">Material ID</Label>;
     },
     cell: ({ row }) => <Label>{`${row.original.id.slice(0, 15)}...`}</Label>,
   },
@@ -23,9 +23,9 @@ export const columns: ColumnDef<Inventory>[] = [
     header: ({ column }) => {
       return (
         <CustomButton
-          className="font-bold p-0!"
+          className="font-bold"
           variant="ghost"
-          label="Item Name"
+          label="Material Name"
           icon={<ArrowUpDown />}
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
@@ -38,7 +38,7 @@ export const columns: ColumnDef<Inventory>[] = [
     id: "stock_unit",
     header: ({ column }) => (
       <CustomButton
-        className="font-bold p-0!"
+        className="font-bold"
         variant="ghost"
         label="Stock"
         icon={<ArrowUpDown />}

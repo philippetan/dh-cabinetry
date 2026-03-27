@@ -26,7 +26,7 @@ export default function Inventory() {
         <Label className="font-bold text-lg">Inventory</Label>
 
         <CustomButton
-          label="Add New Item"
+          label="Add Material"
           icon={<Plus />}
           onClick={() => setOpen(true)}
         />
@@ -35,7 +35,7 @@ export default function Inventory() {
       <DataTable
         columns={columns}
         data={data}
-        searchPlaceholder="Search by item name..."
+        searchPlaceholder="Search by material name..."
         onRowClick={(row) => router.push(`/admin/inventory/${row.id}`)}
         selection={false}
       />
@@ -43,8 +43,8 @@ export default function Inventory() {
       <InventorySheet
         open={open}
         onOpenChange={setOpen}
-        title="Add Item"
-        description="Fill in the details below to add a new item to the inventory."
+        title="Add Material"
+        description="Fill in the details below to add a new material to the inventory."
         mode="add"
       />
     </div>

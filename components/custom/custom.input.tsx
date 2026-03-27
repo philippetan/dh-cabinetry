@@ -8,7 +8,10 @@ import {
 import { CustomInputProps } from "./types/types";
 import { cn } from "@/lib/utils";
 
-const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
+const CustomInput = forwardRef<
+  HTMLInputElement | HTMLTextAreaElement,
+  CustomInputProps
+>(
   (
     {
       icon,
@@ -26,10 +29,14 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         className={cn(className, error && "border border-destructive")}
       >
         {multiline ? (
-          <InputGroupTextarea {...textareaProps} />
+          <InputGroupTextarea
+            ref={ref as React.Ref<HTMLTextAreaElement>}
+            {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+            {...textareaProps}
+          />
         ) : (
           <InputGroupInput
-            ref={ref}
+            ref={ref as React.Ref<HTMLInputElement>}
             {...props}
           />
         )}
