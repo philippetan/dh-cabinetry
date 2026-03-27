@@ -6,13 +6,22 @@ import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { projectFormWrapper, ProjectSchema } from "@/schemas/project.schema";
 import ProjectForm from "@/components/forms/project.form";
+import { addNewProject } from "@/services/project.services";
+import { toast } from "sonner";
 
 const NewProject = () => {
   const router = useRouter();
   const form = projectFormWrapper();
 
   const onSubmit = async (data: ProjectSchema) => {
-    console.log(data);
+    try {
+      await addNewProject(data);
+      toast.success("Project saved successfully!");
+      form.reset();
+    } catch (error) {
+      console.error("Error saving new project: ", error);
+      toast.error("Failed to save new project. Please try again.");
+    }
   };
 
   return (

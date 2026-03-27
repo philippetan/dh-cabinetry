@@ -4,7 +4,7 @@ import z from "zod";
 
 export const projectSchema = z.object({
   project_name: z.string().trim().min(1, "Project name is required."),
-  project_description: z.string().trim().optional(),
+  project_description: z.string().trim().catch(""),
   client_id: z.string().trim().min(1, "Client is required."),
   start_date: z.date(),
   materials_used: z.array(

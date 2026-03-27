@@ -4,7 +4,14 @@ import { ProjectFormProps } from "@/types/project.types";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import CustomField from "../custom/custom.field";
 import CustomInput from "../custom/custom.input";
-import { DollarSign, Hash, Minus, Plus, SquareChartGantt } from "lucide-react";
+import {
+  ChevronDown,
+  DollarSign,
+  Hash,
+  Minus,
+  Plus,
+  SquareChartGantt,
+} from "lucide-react";
 import {
   Combobox,
   ComboboxContent,
@@ -19,21 +26,14 @@ import CustomButton from "../custom/custom.button";
 import ClientSheet from "@/app/admin/clients/components/client.sheet";
 import DatePicker from "../custom/custom.datepicker";
 import { Label } from "../ui/label";
-import { useFieldArray } from "react-hook-form";
+import { useFieldArray, useWatch } from "react-hook-form";
 import { subscribeToInventory } from "@/services/project.services";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../ui/accordion";
 
 const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
   const [clients, setClients] = useState<{ id: string; name: string }[]>([]);
   const [clientSheetOpen, setClientSheetOpen] = useState<boolean>(false);
-  const [materialsOpen, setMaterialsOpen] = useState<boolean>(true);
-
   const materialsContentRef = useRef<HTMLDivElement>(null);
+  const [materialsOpen, setMaterialsOpen] = useState(true);
 
   const [inventory, setInventory] = useState<
     { id: string; name: string; quantity: number; price: string }[]
@@ -54,12 +54,20 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
     };
   }, []);
 
-  useEffect(() => {
-    const materials = form.watch("materials_used");
-    const laborCost =
-      parseFloat(form.watch("labor_cost")?.replace(/,/g, "") || "0") || 0;
+  const watchedMaterials = useWatch({
+    control: form.control,
+    name: "materials_used",
+  });
+  const watchedLaborCost = useWatch({
+    control: form.control,
+    name: "labor_cost",
+  });
 
-    const materialsTotal = materials.reduce((sum, m) => {
+  useEffect(() => {
+    const laborCost =
+      parseFloat(watchedLaborCost?.replace(/,/g, "") || "0") || 0;
+
+    const materialsTotal = (watchedMaterials ?? []).reduce((sum, m) => {
       const qty = parseFloat(m.item_qty) || 0;
       const price = parseFloat(m.item_price) || 0;
       return sum + qty * price;
@@ -74,7 +82,7 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
         maximumFractionDigits: 2,
       }),
     );
-  }, [form.watch("materials_used"), form.watch("labor_cost")]);
+  }, [watchedMaterials, watchedLaborCost]);
 
   return (
     <>
@@ -214,432 +222,240 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                 </div>
               </div>
 
-              {/* <CustomField
-                label="Materials Used"
-                required
-              >
-                <Accordion
-                  type="single"
-                  collapsible
-                  defaultValue="materials"
-                  className="w-full"
-                >
-                  <AccordionItem
-                    value="materials"
-                    className="border rounded-lg"
-                  >
-                    <AccordionTrigger className="px-4 py-3 cursor-pointer hover:no-underline">
-                      <span className="text-sm font-medium">
-                        {fields.length} material{fields.length !== 1 ? "s" : ""}{" "}
-                        added
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent className="p-4">
-                      <div className="grid grid-cols-[45%_15%_15%_15%_10%] items-center w-full gap-3">
-                        <Label className="text-xs text-muted-foreground">
-                          Material Name
-                        </Label>
-                        <Label className="text-xs text-muted-foreground">
-                          Quantity
-                        </Label>
-                        <Label className="text-xs text-muted-foreground">
-                          Price per pc.
-                        </Label>
-                        <Label className="text-xs text-muted-foreground">
-                          Total
-                        </Label>
-                      </div>
-
-                      {fields.map((field, index) => {
-                        const selectedItem = inventory.find(
-                          (i) =>
-                            i.id ===
-                            form.watch(`materials_used.${index}.inventory_id`),
-                        );
-
-                        return (
-                          <div
-                            key={field.id}
-                            className="grid grid-cols-[45%_15%_15%_15%_10%] items-start w-full gap-3"
-                          >
-                            <CustomField
-                              error={
-                                form.errors.materials_used?.[index]
-                                  ?.inventory_id?.message
-                              }
-                            >
-                              <Combobox
-                                items={inventory.filter((i) => {
-                                  const selectedIds = form
-                                    .watch("materials_used")
-                                    .map((m) => m.inventory_id)
-                                    .filter((_, idx) => idx !== index); // exclude current row
-                                  return !selectedIds.includes(i.id);
-                                })}
-                                value={
-                                  inventory.find(
-                                    (i) =>
-                                      i.id ===
-                                      form.watch(
-                                        `materials_used.${index}.inventory_id`,
-                                      ),
-                                  )?.name ?? ""
-                                }
-                                onValueChange={(val) => {
-                                  const selected = inventory.find(
-                                    (s) => s.name === val,
-                                  );
-                                  form.setValue(
-                                    `materials_used.${index}.inventory_id`,
-                                    selected?.id ?? "",
-                                  );
-                                  // Auto-populate price when item is selected
-                                  form.setValue(
-                                    `materials_used.${index}.item_price`,
-                                    selected?.price ?? "",
-                                  );
-                                  // Reset quantity when item changes
-                                  form.setValue(
-                                    `materials_used.${index}.item_qty`,
-                                    "",
-                                  );
-                                }}
-                              >
-                                <ComboboxInput
-                                  placeholder="Enter material name"
-                                  readOnly={form.isSubmitting}
-                                  className={`${
-                                    form.errors.materials_used?.[index]
-                                      ?.inventory_id?.message &&
-                                    "border border-destructive"
-                                  }`}
-                                  showClear={
-                                    !!form.watch(
-                                      `materials_used.${index}.inventory_id`,
-                                    )
-                                  }
-                                />
-
-                                <ComboboxContent>
-                                  <ComboboxEmpty>
-                                    No material found.
-                                  </ComboboxEmpty>
-                                  <ComboboxList>
-                                    {(item) => (
-                                      <ComboboxItem
-                                        key={item.id}
-                                        value={item.name}
-                                        className="cursor-pointer"
-                                      >
-                                        {item.name}
-                                      </ComboboxItem>
-                                    )}
-                                  </ComboboxList>
-                                </ComboboxContent>
-                              </Combobox>
-                            </CustomField>
-
-                            <CustomField
-                              error={
-                                form.errors.materials_used?.[index]?.item_qty
-                                  ?.message
-                              }
-                            >
-                              <CustomInput
-                                type="text"
-                                inputMode="numeric"
-                                icon={<Hash />}
-                                placeholder={
-                                  selectedItem
-                                    ? `Stock: ${selectedItem.quantity}`
-                                    : "Enter quantity"
-                                }
-                                error={
-                                  !!form.errors.materials_used?.[index]
-                                    ?.item_qty
-                                }
-                                readOnly={form.isSubmitting}
-                                {...form.register(
-                                  `materials_used.${index}.item_qty`,
-                                  {
-                                    onChange: (e) => {
-                                      if (!selectedItem) return;
-                                      const inputQty =
-                                        parseFloat(e.target.value) || 0;
-                                      if (inputQty > selectedItem.quantity) {
-                                        form.setError(
-                                          `materials_used.${index}.item_qty`,
-                                          {
-                                            type: "manual",
-                                            message: `Exceeds current stock (${selectedItem.quantity})`,
-                                          },
-                                        );
-                                      } else if (inputQty > 0) {
-                                        form.clearErrors(
-                                          `materials_used.${index}.item_qty`,
-                                        );
-                                      }
-                                    },
-                                  },
-                                )}
-                              />
-                            </CustomField>
-
-                            <CustomField>
-                              <CustomInput
-                                readOnly
-                                icon={<DollarSign />}
-                                className="pointer-events-none"
-                                value={
-                                  form.watch(
-                                    `materials_used.${index}.item_price`,
-                                  ) ?? ""
-                                }
-                              />
-                            </CustomField>
-
-                            <CustomField>
-                              <CustomInput
-                                readOnly
-                                icon={<DollarSign />}
-                                className="pointer-events-none"
-                                value={(
-                                  (parseFloat(
-                                    form.watch(
-                                      `materials_used.${index}.item_qty`,
-                                    ),
-                                  ) || 0) *
-                                  (parseFloat(
-                                    form.watch(
-                                      `materials_used.${index}.item_price`,
-                                    ),
-                                  ) || 0)
-                                ).toFixed(2)}
-                              />
-                            </CustomField>
-
-                            <CustomField className="w-fit">
-                              <CustomButton
-                                type="button"
-                                variant="destructive"
-                                icon={<Minus />}
-                                onClick={() => remove(index)}
-                                disabled={fields.length === 1}
-                              />
-                            </CustomField>
-                          </div>
-                        );
-                      })}
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </CustomField> */}
-
               <CustomField
                 label="Materials Used"
                 required
               >
-                <div className="flex flex-row items-start gap-4 w-full">
-                  <Card className="w-full">
-                    <CardContent>
-                      <div className="grid grid-cols-[45%_15%_15%_15%_10%] items-center w-full gap-3">
-                        <Label className="text-xs text-muted-foreground">
-                          Material Name
-                        </Label>
-                        <Label className="text-xs text-muted-foreground">
-                          Quantity
-                        </Label>
-                        <Label className="text-xs text-muted-foreground">
-                          Price per pc.
-                        </Label>
-                        <Label className="text-xs text-muted-foreground">
-                          Total
-                        </Label>
-                      </div>
+                <Card className="w-full">
+                  <CardContent>
+                    {/* Header / Toggle */}
+                    <div
+                      className="flex items-center justify-between cursor-pointer select-none"
+                      onClick={() => setMaterialsOpen((prev) => !prev)}
+                    >
+                      <span className="text-sm text-muted-foreground">
+                        {fields.length} material{fields.length !== 1 ? "s" : ""}{" "}
+                        added
+                      </span>
+                      <ChevronDown
+                        className={`size-4 text-muted-foreground transition-transform duration-300 ${
+                          materialsOpen ? "rotate-180" : "rotate-0"
+                        }`}
+                      />
+                    </div>
 
-                      {fields.map((field, index) => {
-                        const selectedItem = inventory.find(
-                          (i) =>
-                            i.id ===
-                            form.watch(`materials_used.${index}.inventory_id`),
-                        );
-
-                        return (
-                          <div
-                            key={field.id}
-                            className="grid grid-cols-[45%_15%_15%_15%_10%] items-start w-full gap-3"
-                          >
-                            <CustomField
-                              error={
-                                form.errors.materials_used?.[index]
-                                  ?.inventory_id?.message
-                              }
-                            >
-                              <Combobox
-                                items={inventory.filter((i) => {
-                                  const selectedIds = form
-                                    .watch("materials_used")
-                                    .map((m) => m.inventory_id)
-                                    .filter((_, idx) => idx !== index); // exclude current row
-                                  return !selectedIds.includes(i.id);
-                                })}
-                                value={
-                                  inventory.find(
-                                    (i) =>
-                                      i.id ===
-                                      form.watch(
-                                        `materials_used.${index}.inventory_id`,
-                                      ),
-                                  )?.name ?? ""
-                                }
-                                onValueChange={(val) => {
-                                  const selected = inventory.find(
-                                    (s) => s.name === val,
-                                  );
-                                  form.setValue(
-                                    `materials_used.${index}.inventory_id`,
-                                    selected?.id ?? "",
-                                  );
-                                  // Auto-populate price when item is selected
-                                  form.setValue(
-                                    `materials_used.${index}.item_price`,
-                                    selected?.price ?? "",
-                                  );
-                                  // Reset quantity when item changes
-                                  form.setValue(
-                                    `materials_used.${index}.item_qty`,
-                                    "",
-                                  );
-                                }}
-                              >
-                                <ComboboxInput
-                                  placeholder="Enter material name"
-                                  readOnly={form.isSubmitting}
-                                  className={`${
-                                    form.errors.materials_used?.[index]
-                                      ?.inventory_id?.message &&
-                                    "border border-destructive"
-                                  }`}
-                                  showClear={
-                                    !!form.watch(
-                                      `materials_used.${index}.inventory_id`,
-                                    )
-                                  }
-                                />
-
-                                <ComboboxContent>
-                                  <ComboboxEmpty>
-                                    No material found.
-                                  </ComboboxEmpty>
-                                  <ComboboxList>
-                                    {(item) => (
-                                      <ComboboxItem
-                                        key={item.id}
-                                        value={item.name}
-                                        className="cursor-pointer"
-                                      >
-                                        {item.name}
-                                      </ComboboxItem>
-                                    )}
-                                  </ComboboxList>
-                                </ComboboxContent>
-                              </Combobox>
-                            </CustomField>
-
-                            <CustomField
-                              error={
-                                form.errors.materials_used?.[index]?.item_qty
-                                  ?.message
-                              }
-                            >
-                              <CustomInput
-                                type="text"
-                                inputMode="numeric"
-                                icon={<Hash />}
-                                placeholder={
-                                  selectedItem
-                                    ? `Stock: ${selectedItem.quantity}`
-                                    : "Enter quantity"
-                                }
-                                error={
-                                  !!form.errors.materials_used?.[index]
-                                    ?.item_qty
-                                }
-                                readOnly={form.isSubmitting}
-                                {...form.register(
-                                  `materials_used.${index}.item_qty`,
-                                  {
-                                    onChange: (e) => {
-                                      if (!selectedItem) return;
-                                      const inputQty =
-                                        parseFloat(e.target.value) || 0;
-                                      if (inputQty > selectedItem.quantity) {
-                                        form.setError(
-                                          `materials_used.${index}.item_qty`,
-                                          {
-                                            type: "manual",
-                                            message: `Exceeds current stock (${selectedItem.quantity})`,
-                                          },
-                                        );
-                                      } else if (inputQty > 0) {
-                                        form.clearErrors(
-                                          `materials_used.${index}.item_qty`,
-                                        );
-                                      }
-                                    },
-                                  },
-                                )}
-                              />
-                            </CustomField>
-
-                            <CustomField>
-                              <CustomInput
-                                readOnly
-                                icon={<DollarSign />}
-                                className="pointer-events-none"
-                                value={
-                                  form.watch(
-                                    `materials_used.${index}.item_price`,
-                                  ) ?? ""
-                                }
-                              />
-                            </CustomField>
-
-                            <CustomField>
-                              <CustomInput
-                                readOnly
-                                icon={<DollarSign />}
-                                className="pointer-events-none"
-                                value={(
-                                  (parseFloat(
-                                    form.watch(
-                                      `materials_used.${index}.item_qty`,
-                                    ),
-                                  ) || 0) *
-                                  (parseFloat(
-                                    form.watch(
-                                      `materials_used.${index}.item_price`,
-                                    ),
-                                  ) || 0)
-                                ).toFixed(2)}
-                              />
-                            </CustomField>
-
-                            <CustomField className="w-fit">
-                              <CustomButton
-                                type="button"
-                                variant="destructive"
-                                icon={<Minus />}
-                                onClick={() => remove(index)}
-                                disabled={fields.length === 1}
-                              />
-                            </CustomField>
+                    {/* Collapsible Content */}
+                    <div
+                      className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+                        materialsOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div
+                          ref={materialsContentRef}
+                          className="mt-4 space-y-2 p-1"
+                        >
+                          <div className="grid grid-cols-[45%_15%_15%_15%_10%] items-center w-full gap-3">
+                            <Label className="text-xs text-muted-foreground">
+                              Material Name
+                            </Label>
+                            <Label className="text-xs text-muted-foreground">
+                              Quantity
+                            </Label>
+                            <Label className="text-xs text-muted-foreground">
+                              Price per pc.
+                            </Label>
+                            <Label className="text-xs text-muted-foreground">
+                              Total
+                            </Label>
                           </div>
-                        );
-                      })}
-                    </CardContent>
-                  </Card>
-                </div>
+
+                          {fields.map((field, index) => {
+                            const selectedItem = inventory.find(
+                              (i) =>
+                                i.id ===
+                                form.watch(
+                                  `materials_used.${index}.inventory_id`,
+                                ),
+                            );
+
+                            return (
+                              <div
+                                key={field.id}
+                                className="grid grid-cols-[45%_15%_15%_15%_10%] items-start w-full gap-3"
+                              >
+                                <CustomField
+                                  error={
+                                    form.errors.materials_used?.[index]
+                                      ?.inventory_id?.message
+                                  }
+                                >
+                                  <Combobox
+                                    items={inventory.filter((i) => {
+                                      const selectedIds = form
+                                        .watch("materials_used")
+                                        .map((m) => m.inventory_id)
+                                        .filter((_, idx) => idx !== index);
+                                      return !selectedIds.includes(i.id);
+                                    })}
+                                    value={
+                                      inventory.find(
+                                        (i) =>
+                                          i.id ===
+                                          form.watch(
+                                            `materials_used.${index}.inventory_id`,
+                                          ),
+                                      )?.name ?? ""
+                                    }
+                                    onValueChange={(val) => {
+                                      const selected = inventory.find(
+                                        (s) => s.name === val,
+                                      );
+                                      form.setValue(
+                                        `materials_used.${index}.inventory_id`,
+                                        selected?.id ?? "",
+                                      );
+                                      form.setValue(
+                                        `materials_used.${index}.item_price`,
+                                        selected?.price ?? "",
+                                      );
+                                      form.setValue(
+                                        `materials_used.${index}.item_qty`,
+                                        "",
+                                      );
+                                    }}
+                                  >
+                                    <ComboboxInput
+                                      placeholder="Enter material name"
+                                      readOnly={form.isSubmitting}
+                                      className={`${
+                                        form.errors.materials_used?.[index]
+                                          ?.inventory_id?.message &&
+                                        "border border-destructive"
+                                      }`}
+                                      showClear={
+                                        !!form.watch(
+                                          `materials_used.${index}.inventory_id`,
+                                        )
+                                      }
+                                    />
+                                    <ComboboxContent>
+                                      <ComboboxEmpty>
+                                        No material found.
+                                      </ComboboxEmpty>
+                                      <ComboboxList>
+                                        {(item) => (
+                                          <ComboboxItem
+                                            key={item.id}
+                                            value={item.name}
+                                            className="cursor-pointer"
+                                          >
+                                            {item.name}
+                                          </ComboboxItem>
+                                        )}
+                                      </ComboboxList>
+                                    </ComboboxContent>
+                                  </Combobox>
+                                </CustomField>
+
+                                <CustomField
+                                  error={
+                                    form.errors.materials_used?.[index]
+                                      ?.item_qty?.message
+                                  }
+                                >
+                                  <CustomInput
+                                    type="text"
+                                    inputMode="numeric"
+                                    icon={<Hash />}
+                                    placeholder={
+                                      selectedItem
+                                        ? `Stock: ${selectedItem.quantity}`
+                                        : "Enter quantity"
+                                    }
+                                    error={
+                                      !!form.errors.materials_used?.[index]
+                                        ?.item_qty
+                                    }
+                                    readOnly={form.isSubmitting}
+                                    {...form.register(
+                                      `materials_used.${index}.item_qty`,
+                                      {
+                                        onChange: (e) => {
+                                          if (!selectedItem) return;
+                                          const inputQty =
+                                            parseFloat(e.target.value) || 0;
+                                          if (
+                                            inputQty > selectedItem.quantity
+                                          ) {
+                                            form.setError(
+                                              `materials_used.${index}.item_qty`,
+                                              {
+                                                type: "manual",
+                                                message: `Exceeds current stock (${selectedItem.quantity})`,
+                                              },
+                                            );
+                                          } else if (inputQty > 0) {
+                                            form.clearErrors(
+                                              `materials_used.${index}.item_qty`,
+                                            );
+                                          }
+                                        },
+                                      },
+                                    )}
+                                  />
+                                </CustomField>
+
+                                <CustomField>
+                                  <CustomInput
+                                    readOnly
+                                    icon={<DollarSign />}
+                                    className="pointer-events-none"
+                                    value={
+                                      form.watch(
+                                        `materials_used.${index}.item_price`,
+                                      ) ?? ""
+                                    }
+                                  />
+                                </CustomField>
+
+                                <CustomField>
+                                  <CustomInput
+                                    readOnly
+                                    icon={<DollarSign />}
+                                    className="pointer-events-none"
+                                    value={(
+                                      (parseFloat(
+                                        form.watch(
+                                          `materials_used.${index}.item_qty`,
+                                        ),
+                                      ) || 0) *
+                                      (parseFloat(
+                                        form.watch(
+                                          `materials_used.${index}.item_price`,
+                                        ),
+                                      ) || 0)
+                                    ).toFixed(2)}
+                                  />
+                                </CustomField>
+
+                                <CustomField className="w-fit">
+                                  <CustomButton
+                                    type="button"
+                                    variant="destructive"
+                                    icon={<Minus />}
+                                    onClick={() => remove(index)}
+                                    disabled={fields.length === 1}
+                                  />
+                                </CustomField>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </CustomField>
 
               <CustomButton
@@ -649,7 +465,11 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                 label="Add Material"
                 className="w-full"
                 onClick={() =>
-                  append({ inventory_id: "", item_qty: "", item_price: "" })
+                  append({
+                    inventory_id: "",
+                    item_qty: "",
+                    item_price: "",
+                  })
                 }
               />
 
