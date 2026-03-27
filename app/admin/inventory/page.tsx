@@ -6,12 +6,13 @@ import { Plus } from "lucide-react";
 import InventorySheet from "./components/inventory.sheet";
 import { useState, useEffect } from "react";
 import { DataTable } from "@/components/custom/data.table";
-import { columns, type Inventory } from "./components/columns";
+import { useColumns, type Inventory } from "./components/columns";
 import { subscribeToInventory } from "@/services/inventory.services";
 import { useRouter } from "next/navigation";
 
 export default function Inventory() {
-  const router = useRouter();
+  const columns = useColumns();
+
   const [open, setOpen] = useState<boolean>(false);
   const [data, setData] = useState<Inventory[]>([]);
 
@@ -36,7 +37,6 @@ export default function Inventory() {
         columns={columns}
         data={data}
         searchPlaceholder="Search by material name..."
-        onRowClick={(row) => router.push(`/admin/inventory/${row.id}`)}
         selection={false}
       />
 
