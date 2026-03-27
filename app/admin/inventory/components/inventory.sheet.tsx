@@ -17,9 +17,14 @@ const InventorySheet = ({
   title,
   description,
   mode,
-  open,
-  onOpenChange,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: InventorySheetProps) => {
+  const [internalOpen, setInternalOpen] = useState<boolean>(false);
+
+  const open = controlledOpen ?? internalOpen;
+  const onOpenChange = controlledOnOpenChange ?? setInternalOpen;
+
   const form = inventoryFormWrapper();
 
   useEffect(() => {

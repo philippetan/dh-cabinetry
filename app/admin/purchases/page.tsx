@@ -5,12 +5,13 @@ import { DataTable } from "@/components/custom/data.table";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { columns, type Purchases } from "./components/columns";
+import { useColumns, type Purchases } from "./components/columns";
 import { useEffect, useState } from "react";
 import { subscribeToPurchases } from "@/services/purchase.services";
 
 export default function Purchases() {
   const router = useRouter();
+  const columns = useColumns();
   const [data, setData] = useState<Purchases[]>([]);
 
   useEffect(() => {
@@ -35,7 +36,6 @@ export default function Purchases() {
         columns={columns}
         data={data}
         searchPlaceholder="Search by supplier name"
-        onRowClick={(row) => router.push(`/admin/purchases/${row.id}`)}
         selection={false}
       />
     </div>
