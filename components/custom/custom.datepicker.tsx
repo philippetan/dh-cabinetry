@@ -9,16 +9,17 @@ import { Calendar } from "../ui/calendar";
 interface DatePickerProps {
   value?: Date;
   onSelect?: (date: Date | undefined) => void;
+  isReadOnly?: boolean;
 }
 
-const DatePicker = ({ value, onSelect }: DatePickerProps) => {
+const DatePicker = ({ value, onSelect, isReadOnly }: DatePickerProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           data-empty={!value}
-          className="cursor-pointer w-70 justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+          className={`${isReadOnly && "pointer-events-none"} cursor-pointer w-70 justify-start text-left font-normal data-[empty=true]:text-muted-foreground`}
         >
           <CalendarIcon />
           {value ? format(value, "PPP") : <span>Pick a date</span>}

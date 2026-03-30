@@ -21,7 +21,10 @@ import {
   ComboboxList,
 } from "../ui/combobox";
 import { useEffect, useRef, useState } from "react";
-import { subscribeToClients } from "@/services/project.services";
+import {
+  subscribeToClients,
+  subscribeToInventoryInStock,
+} from "@/services/project.services";
 import CustomButton from "../custom/custom.button";
 import ClientSheet from "@/app/admin/clients/components/client.sheet";
 import DatePicker from "../custom/custom.datepicker";
@@ -29,7 +32,12 @@ import { Label } from "../ui/label";
 import { useFieldArray, useWatch } from "react-hook-form";
 import { subscribeToInventory } from "@/services/project.services";
 
-const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
+const ProjectForm = ({
+  form,
+  onSubmit,
+  originalData,
+  isReadOnly,
+}: ProjectFormProps) => {
   const [clients, setClients] = useState<{ id: string; name: string }[]>([]);
   const [clientSheetOpen, setClientSheetOpen] = useState<boolean>(false);
   const materialsContentRef = useRef<HTMLDivElement>(null);
@@ -46,13 +54,15 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
 
   useEffect(() => {
     const unsubscribeClients = subscribeToClients(setClients);
-    const unsubscribeInventory = subscribeToInventory(setInventory);
+    const unsubscribeInventory = originalData
+      ? subscribeToInventory(setInventory)
+      : subscribeToInventoryInStock(setInventory);
 
     return () => {
       unsubscribeClients();
       unsubscribeInventory();
     };
-  }, []);
+  }, [originalData]);
 
   const watchedMaterials = useWatch({
     control: form.control,
@@ -103,7 +113,8 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                   icon={<SquareChartGantt />}
                   placeholder="Enter project name"
                   error={!!form.errors.project_name}
-                  readOnly={form.isSubmitting}
+                  readOnly={form.isSubmitting || isReadOnly}
+                  className={`${isReadOnly && "pointer-events-none"}`}
                   {...form.register("project_name")}
                 />
               </CustomField>
@@ -116,8 +127,9 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                   type="text"
                   multiline
                   placeholder="Enter project description (optional)"
-                  readOnly={form.isSubmitting}
+                  readOnly={form.isSubmitting || isReadOnly}
                   error={!!form.errors.project_description}
+                  className={`${isReadOnly && "pointer-events-none"}`}
                   {...form.register("project_description")}
                 />
               </CustomField>
@@ -133,6 +145,8 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                   >
                     <Combobox
                       items={clients}
+                      disabled={isReadOnly}
+                      readOnly={isReadOnly}
                       value={
                         clients.find((c) => c.id === form.watch("client_id"))
                           ?.name ?? ""
@@ -167,11 +181,13 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                     </Combobox>
                   </CustomField>
 
-                  <CustomButton
-                    type="button"
-                    label="Add Client"
-                    onClick={() => setClientSheetOpen(true)}
-                  />
+                  {!isReadOnly && (
+                    <CustomButton
+                      type="button"
+                      label="Add Client"
+                      onClick={() => setClientSheetOpen(true)}
+                    />
+                  )}
                 </div>
                 <div className="w-1/4">
                   <CustomField
@@ -180,9 +196,13 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                   >
                     <DatePicker
                       value={form.watch("start_date")}
-                      onSelect={(date) =>
-                        form.setValue("start_date", date ?? new Date())
+                      onSelect={
+                        isReadOnly
+                          ? undefined
+                          : (date) =>
+                              form.setValue("start_date", date ?? new Date())
                       }
+                      isReadOnly={isReadOnly}
                     />
                   </CustomField>
                 </div>
@@ -199,7 +219,8 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                       icon={<DollarSign />}
                       placeholder="Enter labor cost"
                       error={!!form.errors.labor_cost}
-                      readOnly={form.isSubmitting}
+                      readOnly={form.isSubmitting || isReadOnly}
+                      className={`${isReadOnly && "pointer-events-none"}`}
                       {...form.register("labor_cost", {
                         onBlur: (e) => {
                           const value = parseFloat(
@@ -279,6 +300,20 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                                 ),
                             );
 
+                            // When editing, add back the original qty since it was already deducted
+                            const originalQty =
+                              originalData?.materials_used.find(
+                                (m) =>
+                                  m.inventory_id ===
+                                  form.watch(
+                                    `materials_used.${index}.inventory_id`,
+                                  ),
+                              )?.item_qty ?? "0";
+
+                            const availableStock = selectedItem
+                              ? selectedItem.quantity + parseFloat(originalQty)
+                              : 0;
+
                             return (
                               <div
                                 key={field.id}
@@ -307,6 +342,8 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                                           ),
                                       )?.name ?? ""
                                     }
+                                    disabled={isReadOnly}
+                                    readOnly={isReadOnly}
                                     onValueChange={(val) => {
                                       const selected = inventory.find(
                                         (s) => s.name === val,
@@ -374,14 +411,15 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                                     icon={<Hash />}
                                     placeholder={
                                       selectedItem
-                                        ? `Stock: ${selectedItem.quantity}`
+                                        ? `Stock: ${availableStock}`
                                         : "Enter quantity"
                                     }
                                     error={
                                       !!form.errors.materials_used?.[index]
                                         ?.item_qty
                                     }
-                                    readOnly={form.isSubmitting}
+                                    readOnly={form.isSubmitting || isReadOnly}
+                                    className={`${isReadOnly && "pointer-events-none"}`}
                                     {...form.register(
                                       `materials_used.${index}.item_qty`,
                                       {
@@ -389,14 +427,12 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                                           if (!selectedItem) return;
                                           const inputQty =
                                             parseFloat(e.target.value) || 0;
-                                          if (
-                                            inputQty > selectedItem.quantity
-                                          ) {
+                                          if (inputQty > availableStock) {
                                             form.setError(
                                               `materials_used.${index}.item_qty`,
                                               {
                                                 type: "manual",
-                                                message: `Exceeds current stock (${selectedItem.quantity})`,
+                                                message: `Exceeds available stock (${availableStock})`,
                                               },
                                             );
                                           } else if (inputQty > 0) {
@@ -449,7 +485,7 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                                     variant="destructive"
                                     icon={<Minus />}
                                     onClick={() => remove(index)}
-                                    disabled={fields.length === 1}
+                                    disabled={fields.length === 1 || isReadOnly}
                                   />
                                 </CustomField>
                               </div>
@@ -462,21 +498,23 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                 </Card>
               </CustomField>
 
-              <CustomButton
-                type="button"
-                variant="default"
-                icon={<Plus />}
-                label="Add Material"
-                className="w-full"
-                onClick={() =>
-                  append({
-                    inventory_id: "",
-                    item_name: "",
-                    item_qty: "",
-                    item_price: "",
-                  })
-                }
-              />
+              {!isReadOnly && (
+                <CustomButton
+                  type="button"
+                  variant="default"
+                  icon={<Plus />}
+                  label="Add Material"
+                  className="w-full"
+                  onClick={() =>
+                    append({
+                      inventory_id: "",
+                      item_name: "",
+                      item_qty: "",
+                      item_price: "",
+                    })
+                  }
+                />
+              )}
 
               {/* Project Breakdown */}
               <div className="space-y-2">
@@ -567,22 +605,24 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
             </div>
           </CardContent>
 
-          <CardFooter className="flex gap-3 justify-end">
-            <CustomButton
-              type="button"
-              label="Clear"
-              variant="outline"
-              className="w-30"
-              onClick={() => form.reset()}
-              disabled={form.isSubmitting}
-            />
-            <CustomButton
-              type="submit"
-              form="project-form"
-              label="Save Project"
-              loading={form.isSubmitting}
-            />
-          </CardFooter>
+          {!isReadOnly && (
+            <CardFooter className="flex gap-3 justify-end">
+              <CustomButton
+                type="button"
+                label="Clear"
+                variant="outline"
+                className="w-30"
+                onClick={() => form.reset()}
+                disabled={form.isSubmitting}
+              />
+              <CustomButton
+                type="submit"
+                form="project-form"
+                label="Save Project"
+                loading={form.isSubmitting}
+              />
+            </CardFooter>
+          )}
         </Card>
       </form>
 
