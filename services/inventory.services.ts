@@ -1,10 +1,12 @@
 import { Inventory } from "@/app/admin/inventory/components/columns";
 import { db } from "@/config/FirebaseConfig";
 import { InventorySchema } from "@/schemas/inventory.schema";
+import { InventoryData, ProjectUsed, Purchase } from "@/types/inventory.types";
 import {
   collection,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -72,4 +74,64 @@ export const fetchInventoryById = async (id: string) => {
   if (!inventoryDoc.exists()) return null;
 
   return inventoryDoc.data();
+};
+
+export const getInventoryById = async (itemId: string): Promise<InventoryData | null> => {
+  const inventoryDoc = await getDoc(doc(db, "inventory", itemId));
+  if (!inventoryDoc.exists()) return null;
+  return inventoryDoc.data() as InventoryData;
+};
+
+export const getPurchasesByInventoryId = async (itemId: string): Promise<Purchase[]> => {
+  const q = query(
+    collection(db, "purchases"),
+    where("deleted_at", "==", null),
+    orderBy("purchase_date", "desc"),
+  );
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs
+    .map((doc) => {
+      const data = doc.data();
+      const matchedItem = data.items_purchased?.find(
+        (item: any) => item.inventory_id === itemId,
+      );
+      if (!matchedItem) return null;
+      return {
+        id: doc.id,
+        purchase_date: data.purchase_date,
+        supplier_id: data.supplier_id,
+        total_cost: data.total_cost,
+        item_qty: matchedItem.item_qty,
+        item_price: matchedItem.item_price,
+      };
+    })
+    .filter(Boolean) as Purchase[];
+};
+
+export const getProjectsByInventoryId = async (itemId: string): Promise<ProjectUsed[]> => {
+  const q = query(
+    collection(db, "projects"),
+    where("deleted_at", "==", null),
+    orderBy("start_date", "desc"),
+  );
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs
+    .map((doc) => {
+      const data = doc.data();
+      const matchedItem = data.materials_used?.find(
+        (item: any) => item.inventory_id === itemId,
+      );
+      if (!matchedItem) return null;
+      return {
+        id: doc.id,
+        project_name: data.project_name,
+        start_date: data.start_date,
+        item_qty: matchedItem.item_qty,
+        item_price: matchedItem.item_price,
+        item_name: matchedItem.item_name,
+      };
+    })
+    .filter(Boolean) as ProjectUsed[];
 };

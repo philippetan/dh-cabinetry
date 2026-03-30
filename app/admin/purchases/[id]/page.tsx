@@ -9,7 +9,7 @@ import { ChevronLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { columns, PurchaseItem } from "./components/columns";
+import { PurchaseItem, useColumns } from "./components/columns";
 import { DataTable } from "@/components/custom/data.table";
 
 interface PurchaseData {
@@ -27,6 +27,7 @@ const PurchaseInfo = () => {
   const params = useParams();
   const router = useRouter();
   const purchaseId = params.id as string;
+  const columns = useColumns();
 
   const [purchase, setPurchase] = useState<PurchaseData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -104,6 +105,9 @@ const PurchaseInfo = () => {
                 className="font-bold p-0 text-base"
                 variant="link"
                 label={supplierName}
+                onClick={() => {
+                  router.push(`/admin/suppliers`);
+                }}
               />
             </div>
 
