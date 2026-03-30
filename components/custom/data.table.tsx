@@ -28,6 +28,7 @@ import CustomAlertDialog from "@/components/custom/custom.alert.dialog";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  viewSearch?: boolean;
   searchPlaceholder?: string;
   bulkDeleteLabel?: string;
   onBulkDelete?: (ids: string[]) => Promise<void>;
@@ -39,6 +40,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
+  viewSearch = true,
   searchPlaceholder = "Search...",
   bulkDeleteLabel = "Delete selected?",
   onBulkDelete,
@@ -79,30 +81,33 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center justify-between py-4">
-        <CustomInput
-          placeholder={searchPlaceholder}
-          icon={<Search />}
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-sm bg-white"
-        />
-        {table.getFilteredSelectedRowModel().rows.length > 0 && (
-          <CustomAlertDialog
-            trigger={
-              <CustomButton
-                variant="destructive"
-                icon={<Trash />}
-                label={`Delete (${table.getFilteredSelectedRowModel().rows.length})`}
-              />
-            }
-            title={bulkDeleteLabel}
-            description="This action cannot be undone."
-            onClick={handleBulkDelete}
-            confirmText="Delete"
+      {viewSearch && (
+        <div className="flex items-center justify-between py-4">
+          <CustomInput
+            placeholder={searchPlaceholder}
+            icon={<Search />}
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="max-w-sm bg-white"
           />
-        )}
-      </div>
+          {table.getFilteredSelectedRowModel().rows.length > 0 && (
+            <CustomAlertDialog
+              trigger={
+                <CustomButton
+                  variant="destructive"
+                  icon={<Trash />}
+                  label={`Delete (${table.getFilteredSelectedRowModel().rows.length})`}
+                />
+              }
+              title={bulkDeleteLabel}
+              description="This action cannot be undone."
+              onClick={handleBulkDelete}
+              confirmText="Delete"
+            />
+          )}
+        </div>
+      )}
+
       <div className="overflow-hidden rounded-md border">
         <Table className="bg-white/90">
           <TableHeader>
