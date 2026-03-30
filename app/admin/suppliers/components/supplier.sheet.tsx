@@ -65,6 +65,7 @@ const SupplierSheet = ({
     try {
       if (mode === "edit" && editId) {
         await updateSupplier(editId, data);
+        toast.success("Supplier updated successfully!");
       } else {
         await addSupplier(data);
         toast.success("Supplier saved successfully!");
