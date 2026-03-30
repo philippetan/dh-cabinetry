@@ -30,7 +30,11 @@ export const subscribeToSuppliers = (
 export const subscribeToInventory = (
   callback: (data: { id: string; name: string }[]) => void,
 ) => {
-  const q = query(collection(db, "inventory"), where("deleted_at", "==", null), orderBy("item_name", "asc"));
+  const q = query(
+    collection(db, "inventory"),
+    where("deleted_at", "==", null),
+    orderBy("item_name", "asc"),
+  );
   return onSnapshot(q, (snapshot) => {
     callback(
       snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().item_name })),
@@ -117,4 +121,10 @@ export const subscribeToPurchases = (callback: (data: Purchases[]) => void) => {
   });
 
   return unsubscribe;
+};
+
+export const deletePurchase = async (id: string): Promise<void> => {
+  await updateDoc(doc(db, "purchases", id), {
+    deleted_at: serverTimestamp(),
+  });
 };

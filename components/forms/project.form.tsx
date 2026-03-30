@@ -316,6 +316,10 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                                         selected?.id ?? "",
                                       );
                                       form.setValue(
+                                        `materials_used.${index}.item_name`,
+                                        selected?.name ?? "",
+                                      );
+                                      form.setValue(
                                         `materials_used.${index}.item_price`,
                                         selected?.price ?? "",
                                       );
@@ -467,6 +471,7 @@ const ProjectForm = ({ form, onSubmit }: ProjectFormProps) => {
                 onClick={() =>
                   append({
                     inventory_id: "",
+                    item_name: "",
                     item_qty: "",
                     item_price: "",
                   })

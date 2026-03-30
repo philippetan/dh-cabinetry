@@ -10,6 +10,7 @@ export const projectSchema = z.object({
   materials_used: z.array(
     z.object({
       inventory_id: z.string().trim().min(1, "Material is required"),
+      item_name: z.string(),
       item_qty: z.string().trim().min(1, "Quantity is required."),
       item_price: z.string(),
     }),

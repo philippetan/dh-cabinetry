@@ -23,15 +23,15 @@ export const useColumns = (): ColumnDef<Inventory>[] => {
         return <Label className="font-bold">Material ID</Label>;
       },
       cell: ({ row }) => (
-        <CustomButton
-          className="font-normal"
-          label={`${row.original.id.slice(0, 15)}...`}
-          variant="link"
+        <Label
+          className="cursor-pointer hover:underline"
           onClick={(e) => {
             e.stopPropagation();
             router.push(`/admin/inventory/${row.original.id}`);
           }}
-        />
+        >
+          {row.original.id.slice(0, 14)}
+        </Label>
       ),
     },
     {
@@ -125,6 +125,7 @@ export const useColumns = (): ColumnDef<Inventory>[] => {
               mode="edit"
               trigger={
                 <CustomButton
+                  size="icon-sm"
                   variant="outline"
                   icon={<Pencil />}
                   onClick={(e) => e.stopPropagation()}
@@ -137,6 +138,7 @@ export const useColumns = (): ColumnDef<Inventory>[] => {
             <CustomAlertDialog
               trigger={
                 <CustomButton
+                  size="icon-sm"
                   variant="destructive"
                   icon={<Trash />}
                   onClick={(e) => e.stopPropagation()}
