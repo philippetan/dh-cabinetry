@@ -6,7 +6,11 @@ import {
   inventoryFormWrapper,
   InventorySchema,
 } from "@/schemas/inventory.schema";
-import { addInventory } from "@/services/inventory.services";
+import {
+  addInventory,
+  fetchInventoryById,
+  updateInventory,
+} from "@/services/inventory.services";
 import { InventorySheetProps } from "@/types/inventory.types";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -33,10 +37,37 @@ const InventorySheet = ({
     }
   }, [open]);
 
+  useEffect(() => {
+    if (mode !== "edit" || !editId || !open) return;
+
+    const fetchInventory = async () => {
+      try {
+        const inventoryData = await fetchInventoryById(editId);
+        if (!inventoryData) return;
+
+        form.reset({
+          item_name: inventoryData.item_name || "",
+          item_unit: inventoryData.item_unit || "",
+          item_price: inventoryData.item_price || "",
+          item_stock: inventoryData.item_stock || "",
+        });
+      } catch (error) {
+        console.error("Failed to load inventory data: ", error);
+        toast.error("Failed to load inventory data.");
+      }
+    };
+    fetchInventory();
+  }, [mode, editId, open]);
+
   const onSubmit = async (data: InventorySchema) => {
     try {
-      await addInventory(data);
-      toast.success("Item saved successfully!");
+      if (mode === "edit" && editId) {
+        await updateInventory(editId, data);
+        toast.success("Material updated successfully!");
+      } else {
+        await addInventory(data);
+        toast.success("Material saved successfully!");
+      }
       form.reset();
       onOpenChange(false);
     } catch (error) {

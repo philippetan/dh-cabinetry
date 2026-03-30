@@ -4,11 +4,13 @@ import { InventorySchema } from "@/schemas/inventory.schema";
 import {
   collection,
   doc,
+  getDoc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { ulid } from "ulid";
@@ -26,6 +28,18 @@ export const addInventory = async (data: InventorySchema) => {
     created_at: serverTimestamp(),
     updated_at: null,
     deleted_at: null,
+  });
+};
+
+export const updateInventory = async (id: string, data: InventorySchema) => {
+  const cleanedData = {
+    ...data,
+    item_price: parseFloat(data.item_price?.replace(/,/g, "")).toFixed(2),
+  };
+
+  await updateDoc(doc(db, "inventory", id), {
+    ...cleanedData,
+    updated_at: serverTimestamp(),
   });
 };
 
@@ -51,4 +65,11 @@ export const subscribeToInventory = (callback: (data: Inventory[]) => void) => {
     callback(data);
   });
   return unsubscribe;
+};
+
+export const fetchInventoryById = async (id: string) => {
+  const inventoryDoc = await getDoc(doc(db, "inventory", id));
+  if (!inventoryDoc.exists()) return null;
+
+  return inventoryDoc.data();
 };

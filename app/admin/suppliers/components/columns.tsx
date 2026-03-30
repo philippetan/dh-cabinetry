@@ -99,6 +99,7 @@ export const columns: ColumnDef<Suppliers>[] = [
             mode="edit"
             trigger={
               <CustomButton
+                size="icon-sm"
                 variant="outline"
                 icon={<Pencil />}
               />
@@ -110,6 +111,7 @@ export const columns: ColumnDef<Suppliers>[] = [
           <CustomAlertDialog
             trigger={
               <CustomButton
+                size="icon-sm"
                 variant="destructive"
                 icon={<Trash />}
               />
