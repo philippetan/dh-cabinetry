@@ -122,6 +122,7 @@ export const columns: ColumnDef<Clients>[] = [
             mode="edit"
             trigger={
               <CustomButton
+                size="icon-sm"
                 variant="outline"
                 icon={<Pencil />}
               />
@@ -133,6 +134,7 @@ export const columns: ColumnDef<Clients>[] = [
           <CustomAlertDialog
             trigger={
               <CustomButton
+                size="icon-sm"
                 variant="destructive"
                 icon={<Trash />}
               />
