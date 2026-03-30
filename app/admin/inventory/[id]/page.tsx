@@ -25,6 +25,7 @@ import {
   getPurchasesByInventoryId,
 } from "@/services/inventory.services";
 import Loading from "../loading";
+import { getStatus } from "@/lib/inventory.utils";
 
 const ItemInfo = () => {
   const params = useParams();

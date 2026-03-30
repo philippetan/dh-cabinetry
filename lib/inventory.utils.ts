@@ -1,4 +1,4 @@
-const getStatus = (stock: number) => {
+export const getStatus = (stock: number) => {
   if (stock === 0)
     return { label: "Out of Stock", class: "bg-red-100 text-red-600" };
   if (stock <= 10)

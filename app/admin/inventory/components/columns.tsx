@@ -5,6 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Pencil, Trash } from "lucide-react";
 import InventorySheet from "./inventory.sheet";
 import { useRouter } from "next/navigation";
+import { getStatus } from "@/lib/inventory.utils";
 
 export type Inventory = {
   id: string;
