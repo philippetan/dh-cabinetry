@@ -76,13 +76,17 @@ export const fetchInventoryById = async (id: string) => {
   return inventoryDoc.data();
 };
 
-export const getInventoryById = async (itemId: string): Promise<InventoryData | null> => {
+export const getInventoryById = async (
+  itemId: string,
+): Promise<InventoryData | null> => {
   const inventoryDoc = await getDoc(doc(db, "inventory", itemId));
   if (!inventoryDoc.exists()) return null;
   return inventoryDoc.data() as InventoryData;
 };
 
-export const getPurchasesByInventoryId = async (itemId: string): Promise<Purchase[]> => {
+export const getPurchasesByInventoryId = async (
+  itemId: string,
+): Promise<Purchase[]> => {
   const q = query(
     collection(db, "purchases"),
     where("deleted_at", "==", null),
@@ -109,7 +113,9 @@ export const getPurchasesByInventoryId = async (itemId: string): Promise<Purchas
     .filter(Boolean) as Purchase[];
 };
 
-export const getProjectsByInventoryId = async (itemId: string): Promise<ProjectUsed[]> => {
+export const getProjectsByInventoryId = async (
+  itemId: string,
+): Promise<ProjectUsed[]> => {
   const q = query(
     collection(db, "projects"),
     where("deleted_at", "==", null),

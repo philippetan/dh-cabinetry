@@ -8,7 +8,6 @@ import { useState, useEffect } from "react";
 import { DataTable } from "@/components/custom/data.table";
 import { useColumns, type Inventory } from "./components/columns";
 import { subscribeToInventory } from "@/services/inventory.services";
-import { useRouter } from "next/navigation";
 
 export default function Inventory() {
   const columns = useColumns();

@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { PurchaseItem, useColumns } from "./components/columns";
 import { DataTable } from "@/components/custom/data.table";
+import Loading from "../loading";
 
 interface PurchaseData {
   supplier_id: string;
@@ -82,7 +83,7 @@ const PurchaseInfo = () => {
     fetchPurchaseInfo();
   }, [purchaseId]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   if (!purchase) return <div>Purchase not found.</div>;
 
   return (
