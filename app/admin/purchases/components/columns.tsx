@@ -2,18 +2,12 @@ import CustomAlertDialog from "@/components/custom/custom.alert.dialog";
 import CustomButton from "@/components/custom/custom.button";
 import { Label } from "@/components/ui/label";
 import { deletePurchase } from "@/services/purchase.services";
+import { Purchases } from "@/types/purchase.types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Timestamp } from "firebase/firestore";
 import { ArrowUpDown, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-export type Purchases = {
-  id: string;
-  supplier_name: string;
-  purchase_date: Timestamp;
-  total_cost: string;
-};
 
 export const useColumns = (): ColumnDef<Purchases>[] => {
   const router = useRouter();

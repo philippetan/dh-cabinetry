@@ -5,9 +5,10 @@ import { DataTable } from "@/components/custom/data.table";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useColumns, type Purchases } from "./components/columns";
+import { useColumns } from "./components/columns";
 import { useEffect, useState } from "react";
 import { subscribeToPurchases } from "@/services/purchase.services";
+import { type Purchases } from "@/types/purchase.types";
 
 export default function Purchases() {
   const router = useRouter();

@@ -6,8 +6,9 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DataTable } from "@/components/custom/data.table";
-import { Project, useProjectColumns } from "./components/columns";
+import { useProjectColumns } from "./components/columns";
 import { subscribeToProjects } from "@/services/project.services";
+import { Project } from "@/types/project.types";
 
 export default function Projects() {
   const router = useRouter();

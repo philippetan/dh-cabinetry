@@ -1,6 +1,6 @@
-import { Clients } from "@/app/admin/clients/components/columns";
 import { db } from "@/config/FirebaseConfig";
 import { ClientSchema } from "@/schemas/client.schema";
+import { Clients } from "@/types/client.types";
 import {
   collection,
   doc,

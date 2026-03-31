@@ -1,22 +1,12 @@
 import CustomAlertDialog from "@/components/custom/custom.alert.dialog";
 import CustomButton from "@/components/custom/custom.button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { completeProject, deleteProject } from "@/services/project.services";
+import { Project } from "@/types/project.types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Check, Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-export type Project = {
-  id: string;
-  project_name: string;
-  client_id: string;
-  start_date: any;
-  project_fee: string;
-  labor_cost: string;
-  end_date: any;
-};
 
 export const useProjectColumns = (): ColumnDef<Project>[] => {
   const router = useRouter();

@@ -1,7 +1,11 @@
-import { Inventory } from "@/app/admin/inventory/components/columns";
 import { db } from "@/config/FirebaseConfig";
 import { InventorySchema } from "@/schemas/inventory.schema";
-import { InventoryData, ProjectUsed, Purchase } from "@/types/inventory.types";
+import {
+  Inventory,
+  InventoryData,
+  ProjectUsed,
+  Purchase,
+} from "@/types/inventory.types";
 import {
   collection,
   doc,
@@ -17,7 +21,7 @@ import {
 } from "firebase/firestore";
 import { ulid } from "ulid";
 
-export const addInventory = async (data: InventorySchema) => {
+export const addMaterial = async (data: InventorySchema) => {
   const id = ulid();
 
   const cleanedData = {
@@ -33,7 +37,7 @@ export const addInventory = async (data: InventorySchema) => {
   });
 };
 
-export const updateInventory = async (id: string, data: InventorySchema) => {
+export const updateMaterial = async (id: string, data: InventorySchema) => {
   const cleanedData = {
     ...data,
     item_price: parseFloat(data.item_price?.replace(/,/g, "")).toFixed(2),
@@ -42,6 +46,12 @@ export const updateInventory = async (id: string, data: InventorySchema) => {
   await updateDoc(doc(db, "inventory", id), {
     ...cleanedData,
     updated_at: serverTimestamp(),
+  });
+};
+
+export const deleteMaterial = async (id: string): Promise<void> => {
+  await updateDoc(doc(db, "inventory", id), {
+    deleted_at: serverTimestamp(),
   });
 };
 

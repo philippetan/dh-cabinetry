@@ -1,6 +1,6 @@
-import { Purchases } from "@/app/admin/purchases/components/columns";
 import { db } from "@/config/FirebaseConfig";
 import { PurchaseSchema } from "@/schemas/purchase.schema";
+import { Purchases } from "@/types/purchase.types";
 import {
   collection,
   doc,
