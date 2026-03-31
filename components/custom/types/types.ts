@@ -13,7 +13,9 @@ export interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> 
   className?: string;
   multiline?: boolean;
   textareaProps?: TextareaHTMLAttributes<HTMLTextAreaElement>;
+  inputClassName?: string;
 }
+
 export interface CustomFieldProps {
   label?: string;
   required?: boolean;
