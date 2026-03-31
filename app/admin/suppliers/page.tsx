@@ -5,9 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import SupplierSheet from "./components/supplier.sheet";
 import { DataTable } from "@/components/custom/data.table";
-import { columns, type Suppliers } from "./components/columns";
+import { columns } from "./components/columns";
 import { useEffect, useState } from "react";
 import { subscribeToSuppliers } from "@/services/supplier.services";
+import { type Suppliers } from "@/types/supplier.types";
 
 export default function Suppliers() {
   const [data, setData] = useState<Suppliers[]>([]);

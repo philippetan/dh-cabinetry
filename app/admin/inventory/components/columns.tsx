@@ -6,18 +6,39 @@ import { ArrowUpDown, Pencil, Trash } from "lucide-react";
 import InventorySheet from "./inventory.sheet";
 import { useRouter } from "next/navigation";
 import { getStatus } from "@/lib/inventory.utils";
-
-export type Inventory = {
-  id: string;
-  item_name: string;
-  item_unit: string;
-  item_stock: number;
-};
+import { Inventory } from "@/types/inventory.types";
+import { Checkbox } from "@/components/ui/checkbox";
+import { deleteMaterial } from "@/services/inventory.services";
+import { toast } from "sonner";
 
 export const useColumns = (): ColumnDef<Inventory>[] => {
   const router = useRouter();
 
   return [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          className="cursor-pointer"
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          className="cursor-pointer"
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "id",
       header: () => {
@@ -106,7 +127,15 @@ export const useColumns = (): ColumnDef<Inventory>[] => {
       id: "actions",
       header: () => <div className="text-center">Actions</div>,
       cell: ({ row }) => {
-        const handleDelete = async () => {};
+        const handleDelete = async () => {
+          try {
+            await deleteMaterial(row.original.id);
+            toast.success("Material deleted successfully!");
+          } catch (error) {
+            console.error("Error in deleting material: ", error);
+            toast.error("Error deleting the material. Please try again.");
+          }
+        };
 
         return (
           <div className="flex flex-row items-center justify-center gap-2">

@@ -6,13 +6,7 @@ import { toast } from "sonner";
 import SupplierSheet from "./supplier.sheet";
 import CustomAlertDialog from "@/components/custom/custom.alert.dialog";
 import { deleteSupplier } from "@/services/supplier.services";
-
-export type Suppliers = {
-  id: string;
-  supplier_name: string;
-  email_address: string;
-  contact_number: string;
-};
+import { Suppliers } from "@/types/supplier.types";
 
 export const columns: ColumnDef<Suppliers>[] = [
   {

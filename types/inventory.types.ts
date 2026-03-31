@@ -5,6 +5,13 @@ import {
 import { ReactNode } from "react";
 import { SubmitHandler } from "react-hook-form";
 
+export type Inventory = {
+  id: string;
+  item_name: string;
+  item_unit: string;
+  item_stock: number;
+};
+
 export interface InventoryFormProps {
   form: InventoryFormWrapper;
   onSubmit: SubmitHandler<InventorySchema>;

@@ -1,6 +1,6 @@
-import { Suppliers } from "@/app/admin/suppliers/components/columns";
 import { db } from "@/config/FirebaseConfig";
 import { SupplierSchema } from "@/schemas/supplier.schema";
+import { Suppliers } from "@/types/supplier.types";
 import {
   collection,
   doc,

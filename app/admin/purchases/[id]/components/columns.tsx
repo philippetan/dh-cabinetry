@@ -1,15 +1,9 @@
 import CustomButton from "@/components/custom/custom.button";
 import { Label } from "@/components/ui/label";
+import { PurchaseItem } from "@/types/purchase.types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-export type PurchaseItem = {
-  inventory_id: string;
-  item_name: string;
-  item_qty: string;
-  item_price: string;
-};
 
 export const useColumns = (): ColumnDef<PurchaseItem>[] => {
   const router = useRouter();

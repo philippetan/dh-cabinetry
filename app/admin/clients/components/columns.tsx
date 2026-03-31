@@ -8,15 +8,7 @@ import { ArrowUpDown, Pencil, Trash } from "lucide-react";
 import { toast } from "sonner";
 import ClientSheet from "./client.sheet";
 import { Checkbox } from "@/components/ui/checkbox";
-
-export type Clients = {
-  id: string;
-  client_name: string;
-  email_address: string;
-  contact_number: string;
-  ongoing_projects: string;
-  total_spent: string;
-};
+import { Clients } from "@/types/client.types";
 
 export const columns: ColumnDef<Clients>[] = [
   {

@@ -6,8 +6,13 @@ import { Plus } from "lucide-react";
 import InventorySheet from "./components/inventory.sheet";
 import { useState, useEffect } from "react";
 import { DataTable } from "@/components/custom/data.table";
-import { useColumns, type Inventory } from "./components/columns";
-import { subscribeToInventory } from "@/services/inventory.services";
+import { useColumns } from "./components/columns";
+import {
+  deleteMaterial,
+  subscribeToInventory,
+} from "@/services/inventory.services";
+import { type Inventory } from "@/types/inventory.types";
+import { toast } from "sonner";
 
 export default function Inventory() {
   const columns = useColumns();
@@ -19,6 +24,11 @@ export default function Inventory() {
     const unsubscribe = subscribeToInventory(setData);
     return () => unsubscribe();
   }, []);
+
+  const handleBulkDelete = async (ids: string[]) => {
+    await Promise.all(ids.map((id) => deleteMaterial(id)));
+    toast.success(`${ids.length} material(s) deleted successfully.`);
+  };
 
   return (
     <div className="flex flex-col h-full w-full space-y-4">
@@ -37,6 +47,8 @@ export default function Inventory() {
         data={data}
         searchPlaceholder="Search by material name..."
         selection={false}
+        bulkDeleteLabel="Delete selected materials?"
+        onBulkDelete={handleBulkDelete}
       />
 
       <InventorySheet

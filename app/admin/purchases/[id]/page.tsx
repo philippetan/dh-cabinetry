@@ -9,9 +9,10 @@ import { ChevronLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { PurchaseItem, useColumns } from "./components/columns";
+import { useColumns } from "./components/columns";
 import { DataTable } from "@/components/custom/data.table";
 import Loading from "../loading";
+import { PurchaseItem } from "@/types/purchase.types";
 
 interface PurchaseData {
   supplier_id: string;

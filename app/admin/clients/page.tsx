@@ -4,11 +4,12 @@ import { Label } from "@/components/ui/label";
 import ClientSheet from "./components/client.sheet";
 import CustomButton from "@/components/custom/custom.button";
 import { PlusIcon } from "lucide-react";
-import { type Clients, columns } from "./components/columns";
+import { columns } from "./components/columns";
 import { useEffect, useState } from "react";
 import { deleteClient, subscribeToClients } from "@/services/client.services";
 import { toast } from "sonner";
 import { DataTable } from "../../../components/custom/data.table";
+import { type Clients } from "@/types/client.types";
 
 export default function Clients() {
   const [data, setData] = useState<Clients[]>([]);

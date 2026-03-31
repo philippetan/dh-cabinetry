@@ -7,9 +7,9 @@ import {
   InventorySchema,
 } from "@/schemas/inventory.schema";
 import {
-  addInventory,
+  addMaterial,
   fetchInventoryById,
-  updateInventory,
+  updateMaterial,
 } from "@/services/inventory.services";
 import { InventorySheetProps } from "@/types/inventory.types";
 import { useEffect, useState } from "react";
@@ -62,10 +62,10 @@ const InventorySheet = ({
   const onSubmit = async (data: InventorySchema) => {
     try {
       if (mode === "edit" && editId) {
-        await updateInventory(editId, data);
+        await updateMaterial(editId, data);
         toast.success("Material updated successfully!");
       } else {
-        await addInventory(data);
+        await addMaterial(data);
         toast.success("Material saved successfully!");
       }
       form.reset();

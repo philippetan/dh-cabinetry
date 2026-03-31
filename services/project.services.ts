@@ -1,6 +1,6 @@
-import { Project } from "@/app/admin/projects/components/columns";
 import { db } from "@/config/FirebaseConfig";
 import { ProjectSchema } from "@/schemas/project.schema";
+import { Project } from "@/types/project.types";
 import {
   collection,
   doc,
