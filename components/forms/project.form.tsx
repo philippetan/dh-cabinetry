@@ -278,10 +278,12 @@ const ProjectForm = ({
                         >
                           <div className="grid grid-cols-[45%_15%_15%_15%_10%] items-center w-full gap-3">
                             <Label className="text-xs text-muted-foreground">
-                              Material Name
+                              Material Name{" "}
+                              <span className="text-destructive">*</span>
                             </Label>
                             <Label className="text-xs text-muted-foreground">
-                              Quantity
+                              Quantity{" "}
+                              <span className="text-destructive">*</span>
                             </Label>
                             <Label className="text-xs text-muted-foreground">
                               Price per pc.

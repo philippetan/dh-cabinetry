@@ -230,9 +230,29 @@ export const completeProject = async (id: string) => {
 
   await updateDoc(projectRef, {
     end_date: serverTimestamp(),
+    updated_at: serverTimestamp(),
   });
 };
 
-// missing delete project, when deleting a project that's not yet completed,
-// return all unused qty to inventory, but if its completed,
-// just update the deleted_at field
+export const deleteProject = async (id: string) => {
+  const projectDoc = await getDoc(doc(db, "projects", id));
+  if (!projectDoc.exists()) return;
+
+  const data = projectDoc.data();
+  const isCompleted = data.end_date !== null;
+
+  await updateDoc(doc(db, "projects", id), {
+    deleted_at: serverTimestamp(),
+  });
+
+  if (!isCompleted) {
+    await Promise.all(
+      data.materials_used.map(async (item: any) => {
+        await updateDoc(doc(db, "inventory", item.inventory_id), {
+          item_stock: increment(parseFloat(item.item_qty)),
+          updated_at: serverTimestamp(),
+        });
+      }),
+    );
+  }
+};

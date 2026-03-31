@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/FirebaseConfig";
+import Loading from "../loading";
 
 const ProjectPage = () => {
   const router = useRouter();
@@ -26,6 +27,7 @@ const ProjectPage = () => {
 
   const [originalData, setOriginalData] = useState<ProjectSchema | null>(null);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(!isNew);
 
   useEffect(() => {
     if (isNew) return;
@@ -36,7 +38,7 @@ const ProjectPage = () => {
         if (!projectDoc.exists()) return;
 
         const raw = projectDoc.data();
-        setIsCompleted(raw.endDate !== null);
+        setIsCompleted(raw.end_date !== null);
 
         const data = await getProjectById(id);
         if (!data) return;
@@ -45,6 +47,8 @@ const ProjectPage = () => {
       } catch (error) {
         console.error("Error fetching project: ", error);
         toast.error("Failed to load project.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -66,6 +70,11 @@ const ProjectPage = () => {
       toast.error("Failed to save project. Please try again.");
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div className="flex flex-col h-full w-full space-y-4">
       <div>

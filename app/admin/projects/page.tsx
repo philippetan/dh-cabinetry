@@ -34,8 +34,8 @@ export default function Projects() {
         columns={columns}
         data={data}
         searchPlaceholder="Search by project name..."
-        // onRowClick={(row) => router.push(`/admin/projects/${row.id}`)}
         selection={false}
+        bulkDeleteLabel="Delete selected projects?"
       />
     </div>
   );
