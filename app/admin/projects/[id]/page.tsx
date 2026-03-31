@@ -43,7 +43,13 @@ const ProjectPage = () => {
         const data = await getProjectById(id);
         if (!data) return;
         setOriginalData(data);
-        form.reset(data);
+        form.reset({
+          ...data,
+          labor_cost: parseFloat(data.labor_cost).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
+        });
       } catch (error) {
         console.error("Error fetching project: ", error);
         toast.error("Failed to load project.");
