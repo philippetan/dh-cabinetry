@@ -20,6 +20,7 @@ const CustomInput = forwardRef<
       className,
       multiline,
       textareaProps,
+      inputClassName,
       ...props
     },
     ref,
@@ -31,12 +32,14 @@ const CustomInput = forwardRef<
         {multiline ? (
           <InputGroupTextarea
             ref={ref as React.Ref<HTMLTextAreaElement>}
+            className={cn("text-sm", inputClassName)}
             {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
             {...textareaProps}
           />
         ) : (
           <InputGroupInput
             ref={ref as React.Ref<HTMLInputElement>}
+            className={cn("text-sm", inputClassName)}
             {...props}
           />
         )}
