@@ -227,10 +227,27 @@ export const updateProject = async (
 
 export const completeProject = async (id: string) => {
   const projectRef = doc(db, "projects", id);
+  const projectSnap = await getDoc(projectRef);
+  if (!projectSnap.exists()) return;
+
+  const project = projectSnap.data();
 
   await updateDoc(projectRef, {
     end_date: serverTimestamp(),
     updated_at: serverTimestamp(),
+  });
+
+  const sale_id = ulid();
+
+  await setDoc(doc(db, "sales", sale_id), {
+    project_id: id,
+    client_id: project.client_id,
+    date: serverTimestamp(),
+    total_amount: project.project_fee,
+    status: "pending",
+    created_at: serverTimestamp(),
+    deleted_at: null,
+    updated_at: null,
   });
 };
 
